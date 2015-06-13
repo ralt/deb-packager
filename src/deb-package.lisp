@@ -8,15 +8,16 @@
             list)))
 
 (defmacro define-deb-package (name &body forms)
-  `(let ((name (string-downcase (symbol-name ',name)))
-         (changelog-entries
+  `(let ((changelog-entries
           (make-array
            ,(length (get-item forms :changelog))
            :initial-contents (list ,@(mapcar
                                       #'(lambda (entry)
                                           `(make-instance 'changelog-entry ,@entry))
                                       (get-item forms :changelog))))))
-     (format t "~A: ~A~%" name changelog-entries)))
+     (generate (make-instance 'deb-package
+                              :name ',name
+                              :changelog changelog-entries))))
 
 (defclass changelog-entry ()
   ((version :initarg :version
@@ -31,6 +32,19 @@
   (:documentation "A single changelog entry."))
 
 (defclass deb-package ()
-  ((changelog :initarg :changelog
-              :type (vector changelog-entry)))
+  ((name :initarg :name
+         :type symbol
+         :reader name
+         :initform (error "Name required."))
+   (changelog :initarg :changelog
+              :type (vector changelog-entry)
+              :reader changelog
+              :initform (error "Changelog required.")))
   (:documentation "Holds all the data required to generate a debian package."))
+
+(ftype generate deb-package null)
+(defun generate (package)
+  "Generates a debian package."
+  (format t "~A: ~A"
+          (string-downcase (symbol-name (name package)))
+          (changelog package)))
