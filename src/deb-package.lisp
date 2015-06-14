@@ -120,12 +120,12 @@
 
 (ftype ar-entry-file-size (vector integer) (vector integer))
 (defun ar-entry-file-size (contents)
-  )
+  (ar-fixed-integer-vector 10 (integer-to-ascii-bytes (length contents))))
 
 (ftype ar-entry-file-magic (vector integer))
 (defun ar-entry-file-magic ()
-  #())
+  #(#x60 #x0A))
 
 (ftype debian-binary (vector integer))
 (defun debian-binary ()
-  #(#x32 #x2E #x30))
+  #(#x32 #x2E #x30 #x0A))
