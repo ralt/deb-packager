@@ -12,4 +12,5 @@
                 "src"
                 :components
                 ((:file "package")
-                 (:file "deb-package")))))
+                 (:file "deb-package" :depends-on ("ar"))
+                 (:file "ar")))))

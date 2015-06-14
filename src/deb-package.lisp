@@ -52,79 +52,9 @@
 
 (ftype write-bytes (vector integer) stream null)
 (defun write-bytes (bytes stream)
-  (mapcar #'(lambda (byte)
-              (write-byte byte stream))
-          bytes))
-
-(ftype ar-global-header (vector integer))
-(defun ar-global-header ()
-  (concatenate '(vector integer) "!<arch>" #(#x0A)))
-
-(ftype ar-add-entry pathname (vector integer) (vector integer))
-(defun ar-add-entry (path contents)
-  (concatenate '(vector integer)
-               (ar-entry-filename path)
-               (ar-entry-timestamp)
-               (ar-entry-owner)
-               (ar-entry-group)
-               (ar-entry-file-mode)
-               (ar-entry-file-size contents)
-               (ar-entry-file-magic)))
-
-(ftype ar-entry-filename pathname (vector integer))
-(defun ar-entry-filename (path)
-  (ar-fixed-integer-vector 16 (namestring path)))
-
-(ftype integer-to-ascii-bytes integer (vector integer))
-(defun integer-to-ascii-bytes (integer)
-  (let ((ascii-integer (format nil "~D" integer)))
-    (make-array (length ascii-integer)
-                :initial-contents ascii-integer
-                :element-type 'integer)))
-
-(ftype ar-fixed-integer-vector integer vector
-       &key (:element-type symbol) (:initial-element integer)
-       (vector integer))
-(defun ar-fixed-integer-vector (dimension bytes &key
-                                                  (element-type 'integer)
-                                                  (initial-element #x20))
   (loop
-     :with return = (make-array dimension
-                                :element-type element-type
-                                :initial-element initial-element)
-     :for i from 0 to (- (length bytes) 1)
-     :do (setf (aref return i) (elt bytes i))
-     :finally (return return)))
-
-(ftype ar-entry-timestamp (vector integer))
-(defun ar-entry-timestamp ()
-  (ar-fixed-integer-vector
-   12
-   (integer-to-ascii-bytes
-    (local-time:timestamp-to-unix (local-time:now)))))
-
-(ftype ar-entry-owner (vector integer))
-(defun ar-entry-owner ()
-  ;; root
-  #(#x30 #x20 #x20 #x20 #x20 #x20))
-
-(ftype ar-entry-group (vector integer))
-(defun ar-entry-group ()
-  ;; root
-  #(#x30 #x20 #x20 #x20 #x20 #x20))
-
-(ftype ar-entry-file-mode (vector integer))
-(defun ar-entry-file-mode ()
-  ;; 100644 in octal->ascii-hex
-  #(#x31 #x30 #x30 #x36 #x34 #x34 #x20 #x20))
-
-(ftype ar-entry-file-size (vector integer) (vector integer))
-(defun ar-entry-file-size (contents)
-  (ar-fixed-integer-vector 10 (integer-to-ascii-bytes (length contents))))
-
-(ftype ar-entry-file-magic (vector integer))
-(defun ar-entry-file-magic ()
-  #(#x60 #x0A))
+     :for byte across bytes
+     :do (write-byte byte stream)))
 
 (ftype debian-binary (vector integer))
 (defun debian-binary ()
