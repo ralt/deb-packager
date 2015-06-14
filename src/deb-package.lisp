@@ -15,7 +15,7 @@
                                       #'(lambda (entry)
                                           `(make-instance 'changelog-entry ,@entry))
                                       (get-item forms :changelog))))))
-     (generate (make-instance 'deb-package
+     (write-deb-file (make-instance 'deb-package
                               :name ',name
                               :changelog changelog-entries))))
 
@@ -42,9 +42,70 @@
               :initform (error "Changelog required.")))
   (:documentation "Holds all the data required to generate a debian package."))
 
-(ftype generate deb-package null)
-(defun generate (package)
-  "Generates a debian package."
-  (format t "~A: ~A"
-          (string-downcase (symbol-name (name package)))
-          (changelog package)))
+(ftype write-deb-file pathname deb-package null)
+(defun write-deb-file (path package)
+  (with-open-file (s path :direction :output
+                     :element-type '(unsigned-byte 8)
+                     :if-does-not-exist :create)
+    (write-bytes (ar-global-header) s)
+    (write-bytes (ar-add-entry #p"debian-binary" (debian-binary)) s)))
+
+(ftype write-bytes (vector integer) stream null)
+(defun write-bytes (bytes stream)
+  (mapcar #'(lambda (byte)
+              (write-byte byte stream))
+          bytes))
+
+(ftype ar-global-header (vector integer))
+(defun ar-global-header ()
+  (concatenate '(vector integer) "!<arch>" #(#x0A)))
+
+(ftype ar-add-entry pathname (vector integer) (vector integer))
+(defun ar-add-entry (path contents)
+  (concatenate '(vector integer)
+               (ar-entry-filename path)
+               (ar-entry-timestamp)
+               (ar-entry-owner)
+               (ar-entry-group)
+               (ar-entry-file-mode)
+               (ar-entry-file-size contents)
+               (ar-entry-file-magic)))
+
+(ftype ar-entry-filename pathname (vector integer))
+(defun ar-entry-filename (path)
+  (loop
+     :with pathstring = (namestring path)
+     :with filename = (make-array 16 :element-type 'integer)
+     :for i from 0 to 15
+     :do (setf (aref filename i) (if (< i (length pathstring))
+                                     (elt pathstring i)
+                                     #x20))
+     :finally (return filename)))
+
+(ftype ar-entry-timestamp (vector integer))
+(defun ar-entry-timestamp ()
+  #())
+
+(ftype ar-entry-owner (vector integer))
+(defun ar-entry-owner ()
+  #())
+
+(ftype ar-entry-group (vector integer))
+(defun ar-entry-group ()
+  #())
+
+(ftype ar-entry-file-mode (vector integer))
+(defun ar-entry-file-mode ()
+  #())
+
+(ftype ar-entry-file-size (vector integer) (vector integer))
+(defun ar-entry-file-size (contents)
+  #())
+
+(ftype ar-entry-file-magic (vector integer))
+(defun ar-entry-file-magic ()
+  #())
+
+(ftype debian-binary (vector integer))
+(defun debian-binary ()
+  #(#x32 #x2E #x30))
