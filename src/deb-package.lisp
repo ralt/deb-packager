@@ -44,7 +44,13 @@
 
 (ftype name deb-package string)
 (defun name (package)
+  "Gets the name of a package."
   (string-downcase (symbol-name (slot-value package 'name))))
+
+(ftype package-pathname deb-package pathname)
+(defun package-pathname (package)
+  "Gets the pathname of a package."
+  (pathname (concatenate 'string (name package) ".deb")))
 
 (ftype write-deb-file pathname deb-package null)
 (defun write-deb-file (path package)
@@ -68,7 +74,3 @@
 (ftype control-file deb-package (vector integer))
 (defun control-file (package)
   #())
-
-(ftype package-pathname deb-package pathname)
-(defun package-pathname (package)
-  (pathname (concatenate 'string (name package) ".deb")))
