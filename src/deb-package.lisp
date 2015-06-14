@@ -82,9 +82,24 @@
                                      #x20))
      :finally (return filename)))
 
+(ftype integer-to-ascii-bytes integer (vector integer))
+(defun integer-to-ascii-bytes (integer)
+  (let ((ascii-integer (format nil "~D" integer)))
+    (make-array (length ascii-integer)
+                :initial-contents ascii-integer
+                :element-type 'integer)))
+
+
 (ftype ar-entry-timestamp (vector integer))
 (defun ar-entry-timestamp ()
-  #())
+  (loop
+     :with timestamp = (make-array 12 :element-type 'integer)
+     :with now = (integer-to-ascii-bytes (local-time:timestamp-to-unix (local-time:now)))
+     :for i from 0 to 11
+     :do (setf (aref timestamp i) (if (< i (length now))
+                                      (elt now i)
+                                      #x20))
+     :finally (return timestamp)))
 
 (ftype ar-entry-owner (vector integer))
 (defun ar-entry-owner ()

@@ -7,7 +7,7 @@
   :around-compile (lambda (thunk)
                     (declaim (optimize (safety 3)))
                     (funcall thunk))
-  :depends-on (:immutable-struct)
+  :depends-on (:immutable-struct :local-time)
   :components ((:module
                 "src"
                 :components
