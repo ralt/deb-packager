@@ -73,14 +73,7 @@
 
 (ftype ar-entry-filename pathname (vector integer))
 (defun ar-entry-filename (path)
-  (loop
-     :with pathstring = (namestring path)
-     :with filename = (make-array 16 :element-type 'integer)
-     :for i from 0 to 15
-     :do (setf (aref filename i) (if (< i (length pathstring))
-                                     (elt pathstring i)
-                                     #x20))
-     :finally (return filename)))
+  (ar-fixed-integer-vector 16 (namestring path)))
 
 (ftype integer-to-ascii-bytes integer (vector integer))
 (defun integer-to-ascii-bytes (integer)
@@ -89,33 +82,45 @@
                 :initial-contents ascii-integer
                 :element-type 'integer)))
 
+(ftype ar-fixed-integer-vector integer vector
+       &key (:element-type symbol) (:initial-element integer)
+       (vector integer))
+(defun ar-fixed-integer-vector (dimension bytes &key
+                                                  (element-type 'integer)
+                                                  (initial-element #x20))
+  (loop
+     :with return = (make-array dimension
+                                :element-type element-type
+                                :initial-element initial-element)
+     :for i from 0 to (- (length bytes) 1)
+     :do (setf (aref return i) (elt bytes i))
+     :finally (return return)))
 
 (ftype ar-entry-timestamp (vector integer))
 (defun ar-entry-timestamp ()
-  (loop
-     :with timestamp = (make-array 12 :element-type 'integer)
-     :with now = (integer-to-ascii-bytes (local-time:timestamp-to-unix (local-time:now)))
-     :for i from 0 to 11
-     :do (setf (aref timestamp i) (if (< i (length now))
-                                      (elt now i)
-                                      #x20))
-     :finally (return timestamp)))
+  (ar-fixed-integer-vector
+   12
+   (integer-to-ascii-bytes
+    (local-time:timestamp-to-unix (local-time:now)))))
 
 (ftype ar-entry-owner (vector integer))
 (defun ar-entry-owner ()
-  #())
+  ;; root
+  #(#x30 #x20 #x20 #x20 #x20 #x20))
 
 (ftype ar-entry-group (vector integer))
 (defun ar-entry-group ()
-  #())
+  ;; root
+  #(#x30 #x20 #x20 #x20 #x20 #x20))
 
 (ftype ar-entry-file-mode (vector integer))
 (defun ar-entry-file-mode ()
-  #())
+  ;; 100644 in octal->ascii-hex
+  #(#x31 #x30 #x30 #x36 #x34 #x34 #x20 #x20))
 
 (ftype ar-entry-file-size (vector integer) (vector integer))
 (defun ar-entry-file-size (contents)
-  #())
+  )
 
 (ftype ar-entry-file-magic (vector integer))
 (defun ar-entry-file-magic ()
