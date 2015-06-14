@@ -1,4 +1,4 @@
-(in-package #:deb-package)
+(in-package #:deb-package-test)
 
 (define-deb-package foo
   (:changelog
