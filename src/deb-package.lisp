@@ -59,18 +59,57 @@
                      :if-does-not-exist :create)
     (write-bytes (ar-global-header) s)
     (write-bytes (ar-add-entry #p"debian-binary" (debian-binary)) s)
-    (write-bytes (ar-add-entry #p"control.tar.gz" (control-file package)) s)))
+    (write-bytes (ar-add-entry #p"control.tar" (control-archive package)) s)))
 
-(ftype write-bytes (vector integer) stream null)
+(ftype write-bytes (vector (unsigned-byte 8)) stream null)
 (defun write-bytes (bytes stream)
   (loop
      :for byte across bytes
      :do (write-byte byte stream)))
 
-(ftype debian-binary (vector integer))
+(ftype debian-binary (vector (unsigned-byte 8)))
 (defun debian-binary ()
-  #(#x32 #x2E #x30 #x0A))
+  (make-array 4
+              :element-type '(unsigned-byte 8)
+              :initial-contents '(#x32 #x2E #x30 #x0A)))
 
-(ftype control-file deb-package (vector integer))
-(defun control-file (package)
-  #())
+(ftype control-archive deb-package (vector (unsigned-byte 8)))
+(defun control-archive (package)
+  (let* ((out-stream (flexi-streams:make-in-memory-output-stream))
+         (archive (archive:open-archive 'archive:tar-archive out-stream
+                                        :direction :output)))
+    (dolist (entry (control-archive-entries package)
+             (archive:finalize-archive archive))
+      (archive:write-entry-to-archive archive entry
+                                      :stream (control-archive-get-entry-stream
+                                               entry)
+                                      :recurse-into-directory-entries nil))
+    (flexi-streams:get-output-stream-sequence out-stream)))
+
+(ftype control-archive-entries deb-package list)
+(defun control-archive-entries (package)
+  (list
+   (make-instance 'archive::tar-entry
+                  :pathname "control"
+                  :mode (logand archive::+permissions-mask+ 33188)
+                  :typeflag (archive::typeflag-for-mode 33188)
+                  :uid 0
+                  :gid 0
+                  :size 154
+                  :mtime 1434405316)))
+
+(ftype control-archive-get-entry-stream archive::tar-entry flexi-streams:flexi-stream)
+(defun control-archive-get-entry-stream (entry)
+  (cond ((string= (archive::entry-pathname entry) "control")
+         (flexi-streams:make-in-memory-input-stream
+          (string-to-vector "Package: foo
+Version: 1.0-1
+Architecture: all
+Maintainer: Foo Bar <foo@bar.com>
+Depends: vim
+Section: misc
+Priority: optional
+Description: foobar baz qux
+")))
+        (t (flexi-streams:make-in-memory-input-stream
+            (string-to-vector "")))))
