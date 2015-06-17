@@ -8,9 +8,8 @@
                                         :direction :output)))
     (dolist (entry (control-archive-entries package)
              (archive:finalize-archive archive))
-      (archive:write-entry-to-archive archive entry
-                                      :stream (control-archive-get-entry-stream
-                                               entry)
+      (archive:write-entry-to-archive archive (getf entry :entry)
+                                      :stream (getf entry :stream)
                                       :recurse-into-directory-entries nil))
     (flexi-streams:get-output-stream-sequence out-stream)))
 
