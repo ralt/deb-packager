@@ -12,5 +12,6 @@
                 "src"
                 :components
                 ((:file "package")
-                 (:file "deb-package" :depends-on ("ar"))
-                 (:file "ar")))))
+                 (:file "deb-package" :depends-on ("ar" "control-archive"))
+                 (:file "ar")
+                 (:file "control-archive")))))
