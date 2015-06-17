@@ -1,6 +1,5 @@
 (in-package #:deb-package)
 
-(ftype flexi-streams:get-output-stream-sequence stream (vector (unsigned-byte 8)))
 (ftype control-archive deb-package (vector (unsigned-byte 8)))
 (defun control-archive (package)
   (let* ((out-stream (flexi-streams:make-in-memory-output-stream))

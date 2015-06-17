@@ -87,7 +87,6 @@ Priority: optional
 Description: foobar baz qux
 " (name package)))))
 
-(ftype flexi-streams:make-in-memory-input-stream (vector (unsigned-byte 8)) stream)
 (ftype package-md5sums-stream deb-package (values stream integer))
 (defun package-md5sums-stream (package)
   (let ((md5sums-vector
@@ -144,7 +143,6 @@ Description: foobar baz qux
 (defun package-readme ()
   (string-to-vector "Readme file."))
 
-(ftype salza2:compress-data (vector (unsigned-byte 8)) symbol (vector (unsigned-byte 8)))
 (ftype package-changelog deb-package (vector (unsigned-byte 8)))
 (defun package-changelog (package)
   (salza2:compress-data
