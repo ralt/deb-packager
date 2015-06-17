@@ -39,7 +39,8 @@
    (changelog :initarg :changelog
               :type (vector changelog-entry)
               :reader changelog
-              :initform (error "Changelog required.")))
+              :initform (error "Changelog required."))
+   (data-files :type (vector deb-file)))
   (:documentation "Holds all the data required to generate a debian package."))
 
 (ftype name deb-package string)
@@ -86,7 +87,68 @@ Priority: optional
 Description: foobar baz qux
 " (name package)))))
 
-(ftype package-md5sums-stream deb-package stream)
+(ftype flexi-streams:make-in-memory-input-stream (vector (unsigned-byte 8)) stream)
+(ftype package-md5sums-stream deb-package (values stream integer))
 (defun package-md5sums-stream (package)
-  (flexi-streams:make-in-memory-input-stream
-   (string-to-vector (name package))))
+  (let ((md5sums-vector
+         (string-to-vector
+          (format
+           nil
+           "~{~A~%~}"
+           (mapcar
+            #'(lambda (data-file)
+                (concatenate
+                 'string
+                 (ironclad:byte-array-to-hex-string
+                  (ironclad:digest-sequence 'ironclad:md5 (content data-file)))
+                 " "
+                 (namestring (path data-file))))
+            (package-data-files package))))))
+    (values
+     (flexi-streams:make-in-memory-input-stream md5sums-vector)
+     (length md5sums-vector))))
+
+(defclass deb-file ()
+  ((path :initarg :path :reader path :type pathname)
+   (content :initarg :content :reader content :type (vector (unsigned-byte 8)))))
+
+(ftype package-data-files deb-package (vector deb-file))
+(defun package-data-files (package)
+  (let ((data-files (slot-value package 'data-files)))
+    (if data-files
+        data-files
+        (setf (slot-value package 'data-files)
+              (make-array
+               3
+               :initial-contents
+               (list
+                (make-instance
+                 'deb-file
+                 :path (pathname
+                        (format nil "usr/share/doc/~A/copyright" (name package)))
+                 :content (package-copyright))
+                (make-instance
+                 'deb-file
+                 :path (pathname
+                        (format nil "usr/share/doc/~A/README.Debian" (name package)))
+                 :content (package-readme))
+                (make-instance
+                 'deb-file
+                 :path (pathname
+                        (format nil "usr/share/doc/~A/changelog.Debian.gz" (name package)))
+                 :content (package-changelog package))))))))
+
+(ftype package-copyright (vector (unsigned-byte 8)))
+(defun package-copyright ()
+  (string-to-vector "Copyright file."))
+
+(ftype package-readme (vector (unsigned-byte 8)))
+(defun package-readme ()
+  (string-to-vector "Readme file."))
+
+(ftype salza2:compress-data (vector (unsigned-byte 8)) symbol (vector (unsigned-byte 8)))
+(ftype package-changelog deb-package (vector (unsigned-byte 8)))
+(defun package-changelog (package)
+  (salza2:compress-data
+   (string-to-vector (format nil "Changelog file for ~A." (name package)))
+   'salza2:gzip-compressor))
