@@ -1,0 +1,3 @@
+{{ name }} for Debian, generated with deb-packager.
+
+deb-packager is available here: https://github.com/ralt/deb-packager

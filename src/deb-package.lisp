@@ -114,8 +114,8 @@ Description: foobar baz qux
                'deb-file
                :path (pathname
                       (format nil "usr/share/doc/~A/README.Debian" (name package)))
-               :content (package-readme)
-               :size (length (package-readme)))
+               :content (package-readme package)
+               :size (length (package-readme package)))
               (make-instance
                'deb-file
                :path (pathname
@@ -129,11 +129,12 @@ Description: foobar baz qux
 (defun package-copyright ()
   (string-to-vector (djula:render-template* +copyright-template+)))
 
+(defparameter +readme-template+ (djula:compile-template* "README.Debian"))
 
-
-(ftype package-readme (vector (unsigned-byte 8)))
-(defun package-readme ()
-  (string-to-vector "Readme file."))
+(ftype package-readme deb-package (vector (unsigned-byte 8)))
+(defun package-readme (package)
+  (string-to-vector (djula:render-template* +readme-template+ nil
+                                            :name (name package))))
 
 (ftype package-changelog deb-package (vector (unsigned-byte 8)))
 (defun package-changelog (package)
