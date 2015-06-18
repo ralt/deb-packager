@@ -6,13 +6,20 @@
 (defclass changelog-entry ()
   ((version :initarg :version
             :type string
+            :reader version
             :initform (error "Version required."))
    (author :initarg :author
            :type string
+           :reader author
            :initform (error "Author required."))
    (message :initarg :message
             :type string
-            :initform (error "Message required.")))
+            :reader message
+            :initform (error "Message required."))
+   (date :initarg :date
+         :type integer
+         :reader date
+         :initform (error "Date required.")))
   (:documentation "A single changelog entry."))
 
 (defclass deb-file ()
@@ -136,8 +143,27 @@ Description: foobar baz qux
   (string-to-vector (djula:render-template* +readme-template+ nil
                                             :name (name package))))
 
+(defparameter +changelog-template+ (djula:compile-template* "changelog.Debian"))
+
 (ftype package-changelog deb-package (vector (unsigned-byte 8)))
 (defun package-changelog (package)
   (salza2:compress-data
-   (string-to-vector (format nil "Changelog file for ~A." (name package)))
+   (string-to-vector
+    (djula:render-template*
+     +changelog-template+ nil
+     :name (name package)
+     :entries (reverse
+               (loop
+                  :for entry across (changelog package)
+                  :collect (list
+                            :version (version entry)
+                            :message (format-changelog-message (message entry))
+                            :author (author entry)
+                            :date (local-time:format-rfc1123-timestring
+                                   nil
+                                   (local-time:unix-to-timestamp (date entry))))))))
    'salza2:gzip-compressor))
+
+(ftype format-changelog-message string string)
+(defun format-changelog-message (message)
+  (format nil "  * ~A" message))

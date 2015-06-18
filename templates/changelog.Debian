@@ -1,0 +1,7 @@
+{% for entry in entries %}{{ name }} ({{ entry.version }}) UNRELEASED; urgency=medium
+
+{{ entry.message }}
+
+ -- {{ entry.author|safe }}  {{ entry.date }}
+
+{% endfor %}
