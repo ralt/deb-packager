@@ -1,5 +1,8 @@
 (in-package #:deb-packager)
 
+(djula:add-template-directory (asdf:system-relative-pathname "deb-packager"
+                                                             "templates/"))
+
 (defclass changelog-entry ()
   ((version :initarg :version
             :type string
@@ -120,9 +123,13 @@ Description: foobar baz qux
                :content (package-changelog package)
                :size (length (package-changelog package))))))))
 
+(defparameter +copyright-template+ (djula:compile-template* "copyright"))
+
 (ftype package-copyright (vector (unsigned-byte 8)))
 (defun package-copyright ()
-  (string-to-vector "Copyright file."))
+  (string-to-vector (djula:render-template* +copyright-template+)))
+
+
 
 (ftype package-readme (vector (unsigned-byte 8)))
 (defun package-readme ()
