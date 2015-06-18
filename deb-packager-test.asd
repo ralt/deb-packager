@@ -1,5 +1,5 @@
-(asdf:defsystem #:deb-package-test
-  :description "Test package for deb-package."
+(asdf:defsystem #:deb-packager-test
+  :description "Test package for deb-packager."
   :author "Florian Margaine <florian@margaine.com>"
   :license "MIT License"
   :serial t
@@ -9,6 +9,6 @@
                 "t"
                 :components
                 ((:file "package")
-                 (:test-file "deb-package"))))
+                 (:test-file "deb-packager"))))
   :perform (asdf:test-op :after (op c)
                          (funcall (intern #.(string :run) :prove) c)))

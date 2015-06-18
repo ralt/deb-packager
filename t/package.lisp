@@ -1,2 +1,2 @@
-(defpackage #:deb-package-test
-  (:use #:cl #:deb-package #:prove))
+(defpackage #:deb-packager-test
+  (:use #:cl #:deb-packager #:prove))

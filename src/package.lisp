@@ -1,9 +1,9 @@
-(defpackage #:deb-package
+(defpackage #:deb-packager
   (:use #:cl)
   (:shadowing-import-from #:immutable-struct :ftype)
   (:export :define-deb-package))
 
-(in-package #:deb-package)
+(in-package #:deb-packager)
 
 ;; External packages ftype declarations needed
 (ftype flexi-streams:get-output-stream-sequence stream (vector (unsigned-byte 8)))

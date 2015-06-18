@@ -1,4 +1,4 @@
-(in-package #:deb-package)
+(in-package #:deb-packager)
 
 (ftype string-to-vector string (vector (unsigned-byte 8)))
 (defun string-to-vector (string)

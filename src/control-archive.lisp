@@ -1,4 +1,4 @@
-(in-package #:deb-package)
+(in-package #:deb-packager)
 
 (ftype control-archive deb-package (vector (unsigned-byte 8)))
 (defun control-archive (package)

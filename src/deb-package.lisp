@@ -1,24 +1,4 @@
-(in-package #:deb-package)
-
-(ftype get-item list symbol list)
-(defun get-item (list keyword)
-  (rest
-   (find-if #'(lambda (item)
-                (getf item keyword))
-            list)))
-
-(defmacro define-deb-package (name &body forms)
-  `(let ((changelog-entries
-          (make-array
-           ,(length (get-item forms :changelog))
-           :initial-contents (list ,@(mapcar
-                                      #'(lambda (entry)
-                                          `(make-instance 'changelog-entry ,@entry))
-                                      (get-item forms :changelog))))))
-     (let ((package (make-instance 'deb-package
-                                   :name ',name
-                                   :changelog changelog-entries)))
-       (write-deb-file (package-pathname package) package))))
+(in-package #:deb-packager)
 
 (defclass changelog-entry ()
   ((version :initarg :version
@@ -31,6 +11,10 @@
             :type string
             :initform (error "Message required.")))
   (:documentation "A single changelog entry."))
+
+(defclass deb-file ()
+  ((path :initarg :path :reader path :type pathname)
+   (content :initarg :content :reader content :type (vector (unsigned-byte 8)))))
 
 (defclass deb-package ()
   ((name :initarg :name
@@ -105,10 +89,6 @@ Description: foobar baz qux
     (values
      (flexi-streams:make-in-memory-input-stream md5sums-vector)
      (length md5sums-vector))))
-
-(defclass deb-file ()
-  ((path :initarg :path :reader path :type pathname)
-   (content :initarg :content :reader content :type (vector (unsigned-byte 8)))))
 
 (ftype package-data-files deb-package (vector deb-file))
 (defun package-data-files (package)
