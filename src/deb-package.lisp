@@ -70,18 +70,20 @@
               :element-type '(unsigned-byte 8)
               :initial-contents '(#x32 #x2E #x30 #x0A)))
 
+(defparameter +control-template+ (djula:compile-template* "control"))
+
 (ftype package-control-stream deb-package flexi-streams:in-memory-input-stream)
 (defun package-control-stream (package)
   (flexi-streams:make-in-memory-input-stream
-   (string-to-vector (format nil "Package: ~A
-Version: 1.0-1
-Architecture: all
-Maintainer: Foo Bar <foo@bar.com>
-Depends: vim
-Section: misc
-Priority: optional
-Description: foobar baz qux
-" (name package)))))
+   (string-to-vector
+    (djula:render-template*
+     +control-template+ nil
+     :name (name package)
+     :version (package-version package)))))
+
+(ftype package-version deb-package string)
+(defun package-version (package)
+  (version (elt (changelog package) (- (length (changelog package)) 1))))
 
 (ftype package-md5sums-stream deb-package (values stream integer))
 (defun package-md5sums-stream (package)

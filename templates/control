@@ -1,0 +1,8 @@
+Package: {{ name }}
+Version: {{ version }}
+Architecture: all
+Maintainer: Foo Bar <foo@bar.com>
+Depends: vim
+Section: misc
+Priority: optional
+Description: foobar baz qux
