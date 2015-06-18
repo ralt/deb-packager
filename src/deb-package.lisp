@@ -14,7 +14,8 @@
 
 (defclass deb-file ()
   ((path :initarg :path :reader path :type pathname)
-   (content :initarg :content :reader content :type (vector (unsigned-byte 8)))))
+   (content :initarg :content :reader content :type (vector (unsigned-byte 8)))
+   (size :initarg :size :reader size :type integer)))
 
 (defclass deb-package ()
   ((name :initarg :name
@@ -44,7 +45,8 @@
                      :if-does-not-exist :create)
     (write-bytes (ar-global-header) s)
     (write-bytes (ar-add-entry #p"debian-binary" (debian-binary)) s)
-    (write-bytes (ar-add-entry #p"control.tar" (control-archive package)) s)))
+    (write-bytes (ar-add-entry #p"control.tar" (control-archive package)) s)
+    (write-bytes (ar-add-entry #p"data.tar" (data-archive package)) s)))
 
 (ftype write-bytes (vector (unsigned-byte 8)) stream null)
 (defun write-bytes (bytes stream)
@@ -103,17 +105,20 @@ Description: foobar baz qux
                'deb-file
                :path (pathname
                       (format nil "usr/share/doc/~A/copyright" (name package)))
-               :content (package-copyright))
+               :content (package-copyright)
+               :size (length (package-copyright)))
               (make-instance
                'deb-file
                :path (pathname
                       (format nil "usr/share/doc/~A/README.Debian" (name package)))
-               :content (package-readme))
+               :content (package-readme)
+               :size (length (package-readme)))
               (make-instance
                'deb-file
                :path (pathname
                       (format nil "usr/share/doc/~A/changelog.Debian.gz" (name package)))
-               :content (package-changelog package)))))))
+               :content (package-changelog package)
+               :size (length (package-changelog package))))))))
 
 (ftype package-copyright (vector (unsigned-byte 8)))
 (defun package-copyright ()

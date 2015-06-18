@@ -13,6 +13,9 @@
                 :components
                 ((:file "package")
                  (:file "deb-packager" :depends-on ("deb-package"))
-                 (:file "deb-package" :depends-on ("ar" "control-archive"))
+                 (:file "deb-package" :depends-on ("ar"
+                                                   "control-archive"
+                                                   "data-archive"))
                  (:file "ar")
-                 (:file "control-archive")))))
+                 (:file "control-archive")
+                 (:file "data-archive")))))
