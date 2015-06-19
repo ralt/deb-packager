@@ -36,7 +36,11 @@
    (architecture :initarg :architecture
                  :type string
                  :reader architecture
-                 :initform "all"))
+                 :initform "all")
+   (maintainer :initarg :maintainer
+               :type string
+               :reader maintainer
+               :initform (error "Maintainer required.")))
   (:documentation "Holds all the data required to generate a debian package."))
 
 (ftype name deb-package string)
