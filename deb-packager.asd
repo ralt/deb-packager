@@ -7,7 +7,13 @@
   :around-compile (lambda (thunk)
                     (declaim (optimize (safety 3)))
                     (funcall thunk))
-  :depends-on (:immutable-struct :local-time :archive :flexi-streams :salza2 :ironclad)
+  :depends-on (:immutable-struct
+               :local-time
+               :archive
+               :flexi-streams
+               :salza2
+               :ironclad
+               :djula)
   :components ((:module
                 "src"
                 :components
