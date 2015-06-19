@@ -1,6 +1,6 @@
 Package: {{ name }}
 Version: {{ version }}
-Architecture: all
+Architecture: {{ architecture }}
 Maintainer: Foo Bar <foo@bar.com>
 Depends: vim
 Section: misc

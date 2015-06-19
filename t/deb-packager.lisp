@@ -1,6 +1,7 @@
 (in-package #:deb-packager-test)
 
 (deb-packager:define-deb-package foo
+  (:architecture "amd64")
   (:changelog
    (:version "1.0-1"
     :author "Foo Bar <foo@bar.com>"

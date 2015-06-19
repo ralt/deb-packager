@@ -32,7 +32,11 @@
               :type (vector changelog-entry)
               :reader changelog
               :initform (error "Changelog required."))
-   (data-files :type (vector deb-file)))
+   (data-files :type (vector deb-file))
+   (architecture :initarg :architecture
+                 :type string
+                 :reader architecture
+                 :initform "all"))
   (:documentation "Holds all the data required to generate a debian package."))
 
 (ftype name deb-package string)
@@ -43,7 +47,13 @@
 (ftype package-pathname deb-package pathname)
 (defun package-pathname (package)
   "Gets the pathname of a package."
-  (pathname (concatenate 'string (name package) ".deb")))
+  (pathname (concatenate 'string
+                         (name package)
+                         "_"
+                         (package-version package)
+                         "_"
+                         (architecture package)
+                         ".deb")))
 
 (ftype package-version deb-package string)
 (defun package-version (package)

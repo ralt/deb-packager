@@ -17,7 +17,8 @@
                                       (get-item forms :changelog))))))
      (let ((package (make-instance 'deb-package
                                    :name ',name
-                                   :changelog changelog-entries)))
+                                   :changelog changelog-entries
+                                   :architecture ,@(get-item forms :architecture))))
        (write-deb-file (package-pathname package) package))))
 
 (ftype write-deb-file pathname deb-package null)

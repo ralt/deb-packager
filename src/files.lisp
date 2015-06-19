@@ -18,7 +18,8 @@
     (djula:render-template*
      +control-template+ nil
      :name (name package)
-     :version (package-version package)))))
+     :version (package-version package)
+     :architecture (architecture package)))))
 
 (ftype package-md5sums-stream deb-package (values stream integer))
 (defun package-md5sums-stream (package)
