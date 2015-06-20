@@ -5,4 +5,5 @@ Maintainer: {{ maintainer|safe }}{% if depends %}
 Depends: {{ depends }}{% endif %}
 Section: misc
 Priority: optional
-Description: {{ description }}
+Description: {{ description }}{% if long-description %}
+{{ long-description }}{% endif %}

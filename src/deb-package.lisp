@@ -32,6 +32,8 @@
                 :type string
                 :reader description
                 :initform (error "Description required."))
+   (long-description :initarg :long-description
+                     :type string)
    (changelog :initarg :changelog
               :type (vector changelog-entry)
               :reader changelog
@@ -97,3 +99,9 @@
                       (format nil "usr/share/doc/~A/changelog.Debian.gz" (name package)))
                :content (package-changelog package)
                :size (length (package-changelog package))))))))
+
+(ftype package-long-description deb-package string)
+(defun package-long-description (package)
+  "Returns a formatted long description for the package."
+  (format nil "~{ ~A~%~}" (cl-ppcre:split "\\n"
+                                          (slot-value package 'long-description))))

@@ -22,7 +22,8 @@
      :architecture (architecture package)
      :maintainer (maintainer package)
      :depends (format nil "~{~A~^ ~}" (depends package))
-     :description (description package)))))
+     :description (description package)
+     :long-description (package-long-description package)))))
 
 (ftype package-md5sums-stream deb-package (values stream integer))
 (defun package-md5sums-stream (package)

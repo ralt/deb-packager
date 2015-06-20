@@ -13,7 +13,8 @@
                :flexi-streams
                :salza2
                :ironclad
-               :djula)
+               :djula
+               :cl-ppcre)
   :components ((:module
                 "src"
                 :components

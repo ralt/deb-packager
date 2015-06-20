@@ -23,6 +23,10 @@
                                    :depends ',@(if (get-item forms :depends)
                                                    (get-item forms :depends)
                                                    '(nil))
+                                   :long-description
+                                   ,@(if (get-item forms :long-description)
+                                         (get-item forms :long-description)
+                                         '(""))
                                    :maintainer ,@(get-item forms :maintainer))))
        (write-deb-file (package-pathname package) package))))
 
