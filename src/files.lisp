@@ -20,7 +20,8 @@
      :name (name package)
      :version (package-version package)
      :architecture (architecture package)
-     :maintainer (maintainer package)))))
+     :maintainer (maintainer package)
+     :depends (format nil "~{~A~^ ~}" (depends package))))))
 
 (ftype package-md5sums-stream deb-package (values stream integer))
 (defun package-md5sums-stream (package)

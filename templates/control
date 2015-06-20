@@ -1,8 +1,8 @@
 Package: {{ name }}
 Version: {{ version }}
 Architecture: {{ architecture }}
-Maintainer: {{ maintainer|safe }}
-Depends: vim
+Maintainer: {{ maintainer|safe }}{% if depends %}
+Depends: {{ depends }}{% endif %}
 Section: misc
 Priority: optional
 Description: foobar baz qux

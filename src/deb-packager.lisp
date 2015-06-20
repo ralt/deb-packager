@@ -10,15 +10,18 @@
 (defmacro define-deb-package (name &body forms)
   `(let ((changelog-entries
           (make-array
-           ,(length (get-item forms :changelog))
+           ,(length (car (get-item forms :changelog)))
            :initial-contents (list ,@(mapcar
                                       #'(lambda (entry)
                                           `(make-instance 'changelog-entry ,@entry))
-                                      (get-item forms :changelog))))))
+                                      (car (get-item forms :changelog)))))))
      (let ((package (make-instance 'deb-package
                                    :name ',name
                                    :changelog changelog-entries
                                    :architecture ,@(get-item forms :architecture)
+                                   :depends ',@(if (get-item forms :depends)
+                                                   (get-item forms :depends)
+                                                   '(nil))
                                    :maintainer ,@(get-item forms :maintainer))))
        (write-deb-file (package-pathname package) package))))
 

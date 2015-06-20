@@ -40,7 +40,10 @@
    (maintainer :initarg :maintainer
                :type string
                :reader maintainer
-               :initform (error "Maintainer required.")))
+               :initform (error "Maintainer required."))
+   (depends :initarg :depends
+            :type list
+            :reader depends))
   (:documentation "Holds all the data required to generate a debian package."))
 
 (ftype name deb-package string)
