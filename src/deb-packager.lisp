@@ -10,11 +10,11 @@
 (defmacro define-deb-package (name &body forms)
   `(let ((changelog-entries
           (make-array
-           ,(length (car (get-item forms :changelog)))
+           ,(length (get-item forms :changelog))
            :initial-contents (list ,@(mapcar
                                       #'(lambda (entry)
                                           `(make-instance 'changelog-entry ,@entry))
-                                      (car (get-item forms :changelog)))))))
+                                      (get-item forms :changelog))))))
      (let ((package (make-instance 'deb-package
                                    :name ',name
                                    :changelog changelog-entries
