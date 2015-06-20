@@ -5,4 +5,4 @@ Maintainer: {{ maintainer|safe }}{% if depends %}
 Depends: {{ depends }}{% endif %}
 Section: misc
 Priority: optional
-Description: foobar baz qux
+Description: {{ description }}

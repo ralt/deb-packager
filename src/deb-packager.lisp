@@ -18,6 +18,7 @@
      (let ((package (make-instance 'deb-package
                                    :name ',name
                                    :changelog changelog-entries
+                                   :description ,@(get-item forms :description)
                                    :architecture ,@(get-item forms :architecture)
                                    :depends ',@(if (get-item forms :depends)
                                                    (get-item forms :depends)

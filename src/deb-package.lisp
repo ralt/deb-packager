@@ -28,6 +28,10 @@
   ((name :initarg :name
          :type symbol
          :initform (error "Name required."))
+   (description :initarg :description
+                :type string
+                :reader description
+                :initform (error "Description required."))
    (changelog :initarg :changelog
               :type (vector changelog-entry)
               :reader changelog
