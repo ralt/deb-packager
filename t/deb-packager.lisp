@@ -2,11 +2,11 @@
 
 (deb-packager:define-deb-package foo
   (:architecture "amd64")
-  (:depends ("foo"))
+  (:depends ("vim")) ; optional
   (:description "foobar bar qux")
   (:long-description "foo bar
 bar
-qux")
+qux") ; optional
   (:maintainer "Foo Bar <foo@bar.com>")
   (:changelog
    ((:version "1.0-1"
