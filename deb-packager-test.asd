@@ -3,7 +3,7 @@
   :author "Florian Margaine <florian@margaine.com>"
   :license "MIT License"
   :serial t
-  :depends-on (:deb-packager :prove)
+  :depends-on (:deb-packager :prove :alexandria)
   :defsystem-depends-on (:prove-asdf)
   :components ((:module
                 "t"

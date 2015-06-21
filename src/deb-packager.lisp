@@ -4,34 +4,46 @@
 (defun get-item (list keyword)
   (rest
    (find-if #'(lambda (item)
-                (getf item keyword))
+                (eq (car item) keyword))
             list)))
 
 (defmacro define-deb-package (name &body forms)
-  `(let ((changelog-entries
-          (make-array
-           ,(length (get-item forms :changelog))
-           :initial-contents (list ,@(mapcar
-                                      #'(lambda (entry)
-                                          `(make-instance 'changelog-entry ,@entry))
-                                      (get-item forms :changelog))))))
-     (let ((package (make-instance 'deb-package
-                                   :name ',name
-                                   :changelog changelog-entries
-                                   :description ,@(get-item forms :description)
-                                   :architecture ,@(get-item forms :architecture)
-                                   :depends ',@(if (get-item forms :depends)
-                                                   (get-item forms :depends)
-                                                   '(nil))
-                                   :long-description
-                                   ,@(if (get-item forms :long-description)
-                                         (get-item forms :long-description)
-                                         '(""))
-                                   :maintainer ,@(get-item forms :maintainer))))
-       (write-deb-file (package-pathname package) package))))
+  `(let*
+       ((changelog-entries
+         (make-array
+          ,(length (get-item forms :changelog))
+          :initial-contents (list ,@(mapcar
+                                     #'(lambda (entry)
+                                         `(make-instance 'changelog-entry ,@entry))
+                                     (get-item forms :changelog)))))
+        (package (make-instance 'deb-package
+                                :name ',name
+                                :changelog changelog-entries
+                                :description ,@(get-item forms :description)
+                                :architecture ,@(get-item forms :architecture)
+                                :depends ',@(if (get-item forms :depends)
+                                                (get-item forms :depends)
+                                                '(nil))
+                                :long-description
+                                ,@(if (get-item forms :long-description)
+                                      (get-item forms :long-description)
+                                      '(""))
+                                :maintainer ,@(get-item forms :maintainer)))
+        (files
+         (make-array
+          ,(length (get-item forms :files))
+          :initial-contents (list ,@(mapcar
+                                     #'(lambda (file)
+                                         `(make-instance
+                                           'deb-file
+                                           :path ,(getf file :path)
+                                           :content ,(getf file :content)
+                                           :size (length ,(getf file :content))))
+                                     (get-item forms :files))))))
+     (write-deb-file (package-pathname package) package files)))
 
-(ftype write-deb-file pathname deb-package null)
-(defun write-deb-file (path package)
+(ftype write-deb-file pathname deb-package (vector deb-file) null)
+(defun write-deb-file (path package files)
   (with-open-file (s path :direction :output
                      :element-type '(unsigned-byte 8)
                      :if-does-not-exist :create)
