@@ -40,10 +40,11 @@
                                            :content ,(getf file :content)
                                            :size (length ,(getf file :content))))
                                      (get-item forms :files))))))
-     (write-deb-file (package-pathname package) package files)))
+     (initialize-files package files)
+     (write-deb-file (package-pathname package) package)))
 
-(ftype write-deb-file pathname deb-package (vector deb-file) null)
-(defun write-deb-file (path package files)
+(ftype write-deb-file pathname deb-package null)
+(defun write-deb-file (path package)
   (with-open-file (s path :direction :output
                      :element-type '(unsigned-byte 8)
                      :if-does-not-exist :create)

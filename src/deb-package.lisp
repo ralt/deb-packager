@@ -72,34 +72,6 @@
 (defun package-version (package)
   (version (elt (changelog package) (- (length (changelog package)) 1))))
 
-(ftype package-data-files deb-package (vector deb-file))
-(defun package-data-files (package)
-  (if (slot-boundp package 'data-files)
-      (slot-value package 'data-files)
-      (setf (slot-value package 'data-files)
-            (make-array
-             3
-             :initial-contents
-             (list
-              (make-instance
-               'deb-file
-               :path (pathname
-                      (format nil "usr/share/doc/~A/copyright" (name package)))
-               :content (package-copyright)
-               :size (length (package-copyright)))
-              (make-instance
-               'deb-file
-               :path (pathname
-                      (format nil "usr/share/doc/~A/README.Debian" (name package)))
-               :content (package-readme package)
-               :size (length (package-readme package)))
-              (make-instance
-               'deb-file
-               :path (pathname
-                      (format nil "usr/share/doc/~A/changelog.Debian.gz" (name package)))
-               :content (package-changelog package)
-               :size (length (package-changelog package))))))))
-
 (ftype package-long-description deb-package string)
 (defun package-long-description (package)
   "Returns a formatted long description for the package."

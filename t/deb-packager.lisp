@@ -18,10 +18,10 @@ qux") ; optional
     :message "Dolor sit amet."
     :date 1434665998))
   (:files
-   (:path "usr/bin/foo" ; path to install to, without leading slash
+   (:path #p"usr/bin/foo" ; path to install to, without leading slash
     ;; :content is a byte vector of the file's content.
     :content (alexandria:read-file-into-byte-vector
               (asdf:system-relative-pathname "deb-packager-test" "t/fixtures/foo")))
-   (:path "usr/bin/bar"
+   (:path #p"usr/bin/bar"
     :content (alexandria:read-file-into-byte-vector
               (asdf:system-relative-pathname "deb-packager-test" "t/fixtures/bar")))))
