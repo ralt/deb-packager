@@ -14,19 +14,30 @@
 
 (ftype data-archive-entries deb-package list)
 (defun data-archive-entries (package)
-  (let ((mode (logand archive::+permissions-mask+ 33188))
-        (typeflag (archive::typeflag-for-mode 33188))
-        (mtime 1434405316))
+  (let ((mtime 1434405316))
     (loop
        :for data-file across (package-data-files package)
        :collect (list
                  :entry (make-instance 'archive::tar-entry
                                        :pathname (path data-file)
-                                       :mode mode
-                                       :typeflag typeflag
+                                       :mode (data-mode (mode data-file))
+                                       :typeflag (archive::typeflag-for-mode
+                                                  (data-mode (mode data-file)))
                                        :uid 0
                                        :gid 0
                                        :size (size data-file)
                                        :mtime mtime)
                  :stream (flexi-streams:make-in-memory-input-stream
                           (content data-file))))))
+
+(ftype data-mode integer integer)
+(defun data-mode (incomplete-octal-mode)
+  "Some juggling to get an incomplete octal mode,
+e.g. 644, to a string, add the 100 for 'file', still
+in octal, so we have e.g. '100644', then transform
+this string in a decimal integer, e.g. 33188."
+  (multiple-value-bind (integer-mode)
+      (parse-integer
+       (concatenate 'string "100" (write-to-string incomplete-octal-mode))
+       :radix 8)
+    integer-mode))

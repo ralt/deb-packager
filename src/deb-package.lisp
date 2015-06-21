@@ -22,7 +22,8 @@
 (defclass deb-file ()
   ((path :initarg :path :reader path :type pathname)
    (content :initarg :content :reader content :type (vector (unsigned-byte 8)))
-   (size :initarg :size :reader size :type integer)))
+   (size :initarg :size :reader size :type integer)
+   (mode :initarg :mode :reader mode :type integer)))
 
 (defclass deb-package ()
   ((name :initarg :name

@@ -38,7 +38,8 @@
                                            'deb-file
                                            :path ,(getf file :path)
                                            :content ,(getf file :content)
-                                           :size (length ,(getf file :content))))
+                                           :size (length ,(getf file :content))
+                                           :mode ,(or (getf file :mode) 644)))
                                      (get-item forms :files))))))
      (initialize-files package files)
      (write-deb-file (package-pathname package) package)))

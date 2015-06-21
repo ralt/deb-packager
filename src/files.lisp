@@ -99,18 +99,21 @@
                  :path (pathname
                         (format nil "usr/share/doc/~A/copyright" (name package)))
                  :content (package-copyright)
-                 :size (length (package-copyright)))
+                 :size (length (package-copyright))
+                 :mode 644)
                 (make-instance
                  'deb-file
                  :path (pathname
                         (format nil "usr/share/doc/~A/README.Debian" (name package)))
                  :content (package-readme package)
-                 :size (length (package-readme package)))
+                 :size (length (package-readme package))
+                 :mode 644)
                 (make-instance
                  'deb-file
                  :path (pathname
                         (format nil "usr/share/doc/~A/changelog.Debian.gz" (name package)))
                  :content (package-changelog package)
-                 :size (length (package-changelog package))))
+                 :size (length (package-changelog package))
+                 :mode 644))
           files)))
   nil)
