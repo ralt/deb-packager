@@ -56,17 +56,23 @@
 (ftype ar-entry-owner (vector (unsigned-byte 8)))
 (defun ar-entry-owner ()
   ;; root
-  #(#x30 #x20 #x20 #x20 #x20 #x20))
+  (make-array 6
+              :element-type '(unsigned-byte 8)
+              :initial-contents '(#x30 #x20 #x20 #x20 #x20 #x20)))
 
 (ftype ar-entry-group (vector (unsigned-byte 8)))
 (defun ar-entry-group ()
   ;; root
-  #(#x30 #x20 #x20 #x20 #x20 #x20))
+  (make-array 6
+              :element-type '(unsigned-byte 8)
+              :initial-contents '(#x30 #x20 #x20 #x20 #x20 #x20)))
 
 (ftype ar-entry-file-mode (vector (unsigned-byte 8)))
 (defun ar-entry-file-mode ()
   ;; 100644 in octal->ascii-hex
-  #(#x31 #x30 #x30 #x36 #x34 #x34 #x20 #x20))
+  (make-array 8
+              :element-type '(unsigned-byte 8)
+              :initial-contents '(#x31 #x30 #x30 #x36 #x34 #x34 #x20 #x20)))
 
 (ftype ar-entry-file-size (vector (unsigned-byte 8)) (vector (unsigned-byte 8)))
 (defun ar-entry-file-size (contents)
@@ -74,4 +80,6 @@
 
 (ftype ar-entry-file-magic (vector (unsigned-byte 8)))
 (defun ar-entry-file-magic ()
-  #(#x60 #x0A))
+  (make-array 2
+              :element-type '(unsigned-byte 8)
+              :initial-contents '(#x60 #x0A)))
