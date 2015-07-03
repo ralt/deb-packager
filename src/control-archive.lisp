@@ -10,7 +10,13 @@
       (archive:write-entry-to-archive archive (getf entry :entry)
                                       :stream (getf entry :stream)
                                       :recurse-into-directory-entries nil))
-    (flexi-streams:get-output-stream-sequence out-stream)))
+    (let ((bits-vector (flexi-streams:get-output-stream-sequence out-stream)))
+      ;; salza2 wants a simple-array, not a vector
+      (salza2:compress-data (make-array
+                             (length bits-vector)
+                             :element-type '(unsigned-byte 8)
+                             :initial-contents bits-vector)
+                            'salza2:gzip-compressor))))
 
 (ftype control-archive-entries deb-package list)
 (defun control-archive-entries (package)

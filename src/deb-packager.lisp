@@ -51,8 +51,8 @@
                      :if-does-not-exist :create)
     (write-bytes (ar-global-header) s)
     (write-bytes (ar-add-entry #p"debian-binary" (debian-binary)) s)
-    (write-bytes (ar-add-entry #p"control.tar" (control-archive package)) s)
-    (write-bytes (ar-add-entry #p"data.tar" (data-archive package)) s)))
+    (write-bytes (ar-add-entry #p"control.tar.gz" (control-archive package)) s)
+    (write-bytes (ar-add-entry #p"data.tar.gz" (data-archive package)) s)))
 
 (ftype write-bytes (vector (unsigned-byte 8)) stream null)
 (defun write-bytes (bytes stream)
