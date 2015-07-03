@@ -2,7 +2,7 @@
 
 (deb-packager:define-deb-package foo
   (:architecture "amd64")
-  (:depends ("vim")) ; optional
+  (:depends ("vim (> 7)")) ; optional
   (:description "foobar bar qux")
   (:long-description "foo bar
 bar
