@@ -25,4 +25,17 @@ qux") ; optional
     :mode 755)
    (:path #p"usr/bin/bar"
     :content (alexandria:read-file-into-byte-vector
-              (asdf:system-relative-pathname "deb-packager-test" "t/fixtures/bar")))))
+              (asdf:system-relative-pathname "deb-packager-test" "t/fixtures/bar"))))
+  (:scripts
+   (:config (alexandria:read-file-into-byte-vector
+             (asdf:system-relative-pathname "deb-packager-test" "t/fixtures/config"))
+    :templates (alexandria:read-file-into-byte-vector
+                (asdf:system-relative-pathname "deb-packager-test" "t/fixtures/templates"))
+    :preinst (alexandria:read-file-into-byte-vector
+              (asdf:system-relative-pathname "deb-packager-test" "t/fixtures/preinst"))
+    :postinst (alexandria:read-file-into-byte-vector
+               (asdf:system-relative-pathname "deb-packager-test" "t/fixtures/postinst"))
+    :prerm (alexandria:read-file-into-byte-vector
+            (asdf:system-relative-pathname "deb-packager-test" "t/fixtures/prerm"))
+    :postrm (alexandria:read-file-into-byte-vector
+             (asdf:system-relative-pathname "deb-packager-test" "t/fixtures/postrm")))))
