@@ -22,7 +22,9 @@
                (ar-entry-file-mode)
                (ar-entry-file-size contents)
                (ar-entry-file-magic)
-               contents))
+               contents
+               (when (oddp (length contents))
+                 #(#x0A))))
 
 (ftype ar-entry-filename pathname (vector (unsigned-byte 8)))
 (defun ar-entry-filename (path)

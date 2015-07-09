@@ -52,7 +52,7 @@
       :collect (list
                 :entry (make-instance 'archive::tar-entry
                                       :pathname (path control-file)
-                                      :mode (mode control-file)
+                                      :mode (data-mode (mode control-file))
                                       :typeflag (archive::typeflag-for-mode
                                                  (data-mode
                                                   (mode control-file)))
