@@ -39,6 +39,7 @@
               :type (vector changelog-entry)
               :reader changelog
               :initform (error "Changelog required."))
+   (control-files :type (vector deb-file))
    (data-files :type (vector deb-file))
    (architecture :initarg :architecture
                  :type string

@@ -17,7 +17,7 @@ qux") ; optional
     :author "Bar Foo <bar@foo.com>"
     :message "Dolor sit amet."
     :date 1434665998))
-  (:files
+  (:data-files
    (:path #p"usr/bin/foo" ; path to install to, without leading slash
     ;; :content is a byte vector of the file's content.
     :content (alexandria:read-file-into-byte-vector
@@ -26,16 +26,8 @@ qux") ; optional
    (:path #p"usr/bin/bar"
     :content (alexandria:read-file-into-byte-vector
               (asdf:system-relative-pathname "deb-packager-test" "t/fixtures/bar"))))
-  (:scripts
-   (:config (alexandria:read-file-into-byte-vector
-             (asdf:system-relative-pathname "deb-packager-test" "t/fixtures/config"))
-    :templates (alexandria:read-file-into-byte-vector
-                (asdf:system-relative-pathname "deb-packager-test" "t/fixtures/templates"))
-    :preinst (alexandria:read-file-into-byte-vector
-              (asdf:system-relative-pathname "deb-packager-test" "t/fixtures/preinst"))
-    :postinst (alexandria:read-file-into-byte-vector
-               (asdf:system-relative-pathname "deb-packager-test" "t/fixtures/postinst"))
-    :prerm (alexandria:read-file-into-byte-vector
-            (asdf:system-relative-pathname "deb-packager-test" "t/fixtures/prerm"))
-    :postrm (alexandria:read-file-into-byte-vector
-             (asdf:system-relative-pathname "deb-packager-test" "t/fixtures/postrm")))))
+  (:control-files
+   (:path #p"postinst"
+    :mode 755
+    :content (alexandria:read-file-into-byte-vector
+              (asdf:system-relative-pathname "deb-packager-test" "t/fixtures/postinst")))))

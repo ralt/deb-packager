@@ -20,29 +20,45 @@
 
 (ftype control-archive-entries deb-package list)
 (defun control-archive-entries (package)
-  (let ((mode (logand archive::+permissions-mask+ 33188))
-        (typeflag (archive::typeflag-for-mode 33188))
-        (mtime 1434405316))
-    (multiple-value-bind (md5sums-stream md5sums-length)
-        (package-md5sums-stream package)
-      (list
+  (append
+   (let ((mode (logand archive::+permissions-mask+ 33188))
+         (typeflag (archive::typeflag-for-mode 33188))
+         (mtime 1434405316))
+     (multiple-value-bind (md5sums-stream md5sums-length)
+         (package-md5sums-stream package)
        (list
-        :entry (make-instance 'archive::tar-entry
-                              :pathname "control"
-                              :mode mode
-                              :typeflag typeflag
-                              :uid 0
-                              :gid 0
-                              :size 154
-                              :mtime mtime)
-        :stream (package-control-stream package))
-       (list
-        :entry (make-instance 'archive::tar-entry
-                              :pathname "md5sums"
-                              :mode mode
-                              :typeflag typeflag
-                              :uid 0
-                              :gid 0
-                              :size md5sums-length
-                              :mtime mtime)
-        :stream md5sums-stream)))))
+        (list
+         :entry (make-instance 'archive::tar-entry
+                               :pathname "control"
+                               :mode mode
+                               :typeflag typeflag
+                               :uid 0
+                               :gid 0
+                               :size 154
+                               :mtime mtime)
+         :stream (package-control-stream package))
+        (list
+         :entry (make-instance 'archive::tar-entry
+                               :pathname "md5sums"
+                               :mode mode
+                               :typeflag typeflag
+                               :uid 0
+                               :gid 0
+                               :size md5sums-length
+                               :mtime mtime)
+         :stream md5sums-stream))))
+   (loop
+      :for control-file across (package-control-files package)
+      :collect (list
+                :entry (make-instance 'archive::tar-entry
+                                      :pathname (path control-file)
+                                      :mode (mode control-file)
+                                      :typeflag (archive::typeflag-for-mode
+                                                 (data-mode
+                                                  (mode control-file)))
+                                      :uid 0
+                                      :gid 0
+                                      :size (size control-file)
+                                      :mtime 1434405316)
+                :stream (flexi-streams:make-in-memory-input-stream
+                         (content control-file))))))

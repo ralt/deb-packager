@@ -29,9 +29,9 @@
                                       (get-item forms :long-description)
                                       '(""))
                                 :maintainer ,@(get-item forms :maintainer)))
-        (files
+        (control-files
          (make-array
-          ,(length (get-item forms :files))
+          ,(length (get-item forms :control-files))
           :initial-contents (list ,@(mapcar
                                      #'(lambda (file)
                                          `(make-instance
@@ -40,8 +40,21 @@
                                            :content ,(getf file :content)
                                            :size (length ,(getf file :content))
                                            :mode ,(or (getf file :mode) 644)))
-                                     (get-item forms :files))))))
-     (initialize-files package files)
+                                     (get-item forms :control-files)))))
+        (data-files
+         (make-array
+          ,(length (get-item forms :data-files))
+          :initial-contents (list ,@(mapcar
+                                     #'(lambda (file)
+                                         `(make-instance
+                                           'deb-file
+                                           :path ,(getf file :path)
+                                           :content ,(getf file :content)
+                                           :size (length ,(getf file :content))
+                                           :mode ,(or (getf file :mode) 644)))
+                                     (get-item forms :data-files))))))
+     (initialize-control-files package control-files)
+     (initialize-data-files package data-files)
      (write-deb-file (package-pathname package) package)))
 
 (ftype write-deb-file pathname deb-package null)

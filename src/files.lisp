@@ -82,12 +82,24 @@
 (defun format-changelog-message (message)
   (format nil "  * ~A" message))
 
+(ftype package-control-files deb-package (vector deb-file))
+(defun package-control-files (package)
+  (slot-value package 'control-files))
+
 (ftype package-data-files deb-package (vector deb-file))
 (defun package-data-files (package)
   (slot-value package 'data-files))
 
-(ftype initialize-files deb-package (vector deb-file) null)
-(defun initialize-files (package files)
+(ftype initialize-control-files deb-package (vector deb-file) null)
+(defun initialize-control-files (package files)
+  (setf (slot-value package 'control-files)
+        (make-array
+         (length files)
+         :initial-contents files))
+  nil)
+
+(ftype initialize-data-files deb-package (vector deb-file) null)
+(defun initialize-data-files (package files)
   (setf (slot-value package 'data-files)
         (make-array
          (+ 3 (length files))
