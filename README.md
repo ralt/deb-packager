@@ -22,11 +22,12 @@ definition
   building from this source package to binary package. Using pbuilder
   to handle the creation of the package means being reliant on
   devscripts being installed, and this should be avoided. (I'd like
-  deb-packager to be runnable on non-debian.) So a custom
-  solution using lxc to handle the chrooting, running
-  configure/make/make install, and generating a deb-packager
+  deb-packager to be runnable on non-debian.) So a custom solution
+  using lxc to handle the chrooting, fetching build dependencies,
+  running configure/make/make install, and generating a deb-packager
   definition is probably what's going to be done. To make it even more
-  cross-platform, something based on debian is also possible.
+  cross-platform, something based on vagrant is also possible. Or use
+  vagrant and lxc as a backend. Hm...
 - Support building python packages. In addition, see if it's possible
   to build nodejs packages, php packages, etc.
 
