@@ -16,6 +16,7 @@ definition
 
 ### Roadmap
 
+- Create a CLI interface
 - Support gpg signatures
 - Support break/conflicts
 - Support source package creation (+ .dsc & .changes), patching, and
