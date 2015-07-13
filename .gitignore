@@ -1,1 +1,3 @@
 *.fasl
+deb-packager
+quicklisp-manifest.txt

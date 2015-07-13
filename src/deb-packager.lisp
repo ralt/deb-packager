@@ -72,3 +72,14 @@
   (loop
      :for byte across bytes
      :do (write-byte byte stream)))
+
+(defun main (&optional args)
+  (format t "~A~%" "I don't do much yet"))
+
+(defun disable-debugger ()
+  (labels
+      ((exit (c h)
+         (declare (ignore h))
+         (format t "~A~%" c)
+         (sb-ext:exit)))
+    (setf *debugger-hook* #'exit)))

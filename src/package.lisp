@@ -1,7 +1,9 @@
 (defpackage #:deb-packager
   (:use #:cl)
   (:shadowing-import-from #:immutable-struct :ftype)
-  (:export :define-deb-package))
+  (:export :define-deb-package
+           :main
+           :disable-debugger))
 
 (in-package #:deb-packager)
 
