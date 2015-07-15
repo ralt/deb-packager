@@ -2,7 +2,7 @@
 
 Simply create a debian package by defining an s-expression.
 
-See the [test file](t/deb-packager.lisp) for an example definition.
+See the [test file](t/fixtures/test-package.lisp) for an example definition.
 
 Right now, this is supported:
 
@@ -16,6 +16,7 @@ definition
 
 ### Roadmap
 
+- Write documentation
 - Support gpg signatures
 - Support break/conflicts
 - Support source package creation (+ .dsc & .changes), patching, and
