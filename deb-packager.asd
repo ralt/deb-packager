@@ -7,14 +7,16 @@
   :around-compile (lambda (thunk)
                     (declaim (optimize (safety 3)))
                     (funcall thunk))
-  :depends-on (:immutable-struct
+  :depends-on (:alexandria ;; for LOAD purposes
+               :immutable-struct
                :local-time
                :archive
                :flexi-streams
                :salza2
                :ironclad
                :djula
-               :cl-ppcre)
+               :cl-ppcre
+               :unix-opts)
   :components ((:module
                 "src"
                 :components

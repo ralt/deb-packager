@@ -73,8 +73,65 @@
      :for byte across bytes
      :do (write-byte byte stream)))
 
-(defun main (&optional args)
-  (format t "~A~%" "I don't do much yet"))
+(defun unknown-option (condition)
+  (format t "warning: ~s option is unknown!~%" (opts:option condition))
+  (invoke-restart 'opts:skip-option))
+
+(defmacro when-option ((options opt) &body body)
+  `(let ((it (getf ,options ,opt)))
+     (when it
+       ,@body)))
+
+(opts:define-opts
+  (:name :help
+   :description "print this help text"
+   :short #\h
+   :long "help")
+  (:name :version
+   :description "print the version"
+   :short #\v
+   :long "version"))
+
+(defun help ()
+  (opts:describe
+   :prefix "deb-packager - Simply create a debian package by defining an s-expression."
+   :usage-of "deb-packager"
+   :args "FILE"))
+
+(defun main (args)
+  (declare (ignore args))
+  (multiple-value-bind (options free-args)
+      (handler-case
+          (handler-bind ((opts:unknown-option #'unknown-option))
+            (opts:get-opts))
+        (opts:missing-arg (condition)
+          (format t "fatal: option ~A needs an argument!~%"
+                  (opts:option condition)))
+        (opts:arg-parser-failed (condition)
+          (format t "fatal: cannot parse ~A as argument of ~A~%"
+                  (opts:raw-arg condition)
+                  (opts:option condition))))
+    (when-option (options :help)
+      (help)
+      (uiop:quit))
+    (when-option (options :version)
+      (format t "1.0~%")
+      (uiop:quit))
+    (unless free-args
+      (help)
+      (uiop:quit))
+    (when (> (length free-args) 1)
+      (format t "fatal: too many arguments~%")
+      (uiop:quit -1))
+    (let ((file (pathname (first free-args))))
+      (unless (probe-file file)
+        (format t "fatal: could not find ~A~%" (namestring file))
+        (uiop:quit -1))
+      (in-package #:deb-packager)
+      (handler-case
+          (load file :verbose nil :print nil)
+        (file-error () (format t "fatal: file already exists~%"))
+        (error () (format t "fatal: unknown error~%"))))))
 
 (defun disable-debugger ()
   (labels

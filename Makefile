@@ -1,6 +1,7 @@
 ROOT_DIR:=$(shell dirname $(realpath $(lastword $(MAKEFILE_LIST))))
+SOURCES := $(wildcard src/*.lisp) $(wildcard *.asd)
 
-deb-packager: quicklisp-manifest.txt
+deb-packager: quicklisp-manifest.txt $(SOURCES)
 	@buildapp  --manifest-file quicklisp-manifest.txt \
 		--eval '(push "$(ROOT_DIR)/" asdf:*central-registry*)' \
 		--load-system deb-packager \
