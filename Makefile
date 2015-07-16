@@ -8,6 +8,7 @@ deb-packager: quicklisp-manifest.txt $(SOURCES)
 		--eval '(push "$(ROOT_DIR)/" asdf:*central-registry*)' \
 		--load-system deb-packager \
 		--eval '(deb-packager:disable-debugger)' \
+		--compress-core \
 		--output deb-packager --entry deb-packager:main
 
 quicklisp-manifest.txt:
