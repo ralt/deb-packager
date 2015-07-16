@@ -20,9 +20,31 @@
 
 (ftype data-archive-entries deb-package list)
 (defun data-archive-entries (package)
-  (let ((mtime 1434405316))
+  (let ((mtime 1434405316)
+        (folders))
     (loop
        :for data-file across (package-data-files package)
+       :when (not (member (directory-namestring (path data-file))
+                          folders
+                          :test #'string=))
+       :collect (list
+                 :entry (make-instance 'archive::tar-entry
+                                       :pathname (pathname
+                                                  (directory-namestring
+                                                   (path data-file)))
+                                       :mode 16877
+                                       :typeflag (archive::typeflag-for-mode
+                                                  16877)
+                                       :uid 0
+                                       :gid 0
+                                       :size 0
+                                       :mtime mtime)
+                 :stream (flexi-streams:make-in-memory-input-stream
+                          (make-array 0 :element-type '(unsigned-byte 8))))
+       :when (not (member (directory-namestring (path data-file))
+                          folders
+                          :test #'string=))
+       :do (push (directory-namestring (path data-file)) folders)
        :collect (list
                  :entry (make-instance 'archive::tar-entry
                                        :pathname (path data-file)
@@ -36,14 +58,14 @@
                  :stream (flexi-streams:make-in-memory-input-stream
                           (content data-file))))))
 
-(ftype data-mode integer integer)
-(defun data-mode (incomplete-octal-mode)
+(ftype data-mode integer &optional boolean integer)
+(defun data-mode (incomplete-octal-mode &optional (directory-p nil))
   "Some juggling to get an incomplete octal mode,
 e.g. 644, to a string, add the 100 for 'file', still
 in octal, so we have e.g. '100644', then transform
 this string in a decimal integer, e.g. 33188."
   (multiple-value-bind (integer-mode)
       (parse-integer
-       (concatenate 'string "100" (write-to-string incomplete-octal-mode))
+       (concatenate 'string (if directory-p "000" "100") (write-to-string incomplete-octal-mode))
        :radix 8)
     integer-mode))
