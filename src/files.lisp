@@ -11,19 +11,21 @@
 
 (defparameter +control-template+ (djula:compile-template* "control"))
 
-(ftype package-control-stream deb-package flexi-streams:in-memory-input-stream)
+(ftype package-control-stream deb-package (values stream integer))
 (defun package-control-stream (package)
-  (flexi-streams:make-in-memory-input-stream
-   (string-to-vector
-    (djula:render-template*
-     +control-template+ nil
-     :name (name package)
-     :version (package-version package)
-     :architecture (architecture package)
-     :maintainer (maintainer package)
-     :depends (format nil "~{~A~^ ~}" (depends package))
-     :description (description package)
-     :long-description (package-long-description package)))))
+  (let ((control-vector (string-to-vector
+                         (djula:render-template*
+                          +control-template+ nil
+                          :name (name package)
+                          :version (package-version package)
+                          :architecture (architecture package)
+                          :maintainer (maintainer package)
+                          :depends (format nil "~{~A~^ ~}" (depends package))
+                          :description (description package)
+                          :long-description (package-long-description package)))))
+    (values
+     (flexi-streams:make-in-memory-input-stream control-vector)
+     (length control-vector))))
 
 (ftype package-md5sums-stream deb-package (values stream integer))
 (defun package-md5sums-stream (package)
