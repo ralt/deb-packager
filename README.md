@@ -16,6 +16,10 @@ definition
 
 ### Roadmap
 
+- Dogfood:
+    - 2 bugs found:
+        - control file size fixed in 2e8c350
+        - hierarchy of folder for data files need to be in the archive too.
 - Write documentation
 - Support gpg signatures
 - Support break/conflicts
