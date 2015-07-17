@@ -18,6 +18,7 @@ quicklisp-manifest.txt:
 		--eval '(ql:write-asdf-manifest-file "quicklisp-manifest.txt")'
 
 manual:
+	@mkdir -p dist/
 	@pandoc -s -t man docs/deb-packager.md > dist/deb-packager.1
 	@gzip dist/deb-packager.1
 
@@ -26,6 +27,6 @@ dist:
 	@make manual
 	@mkdir -p dist/
 	@cp deb-packager dist/
-	@./deb-packager dist/deb-packager.lisp
+	@./deb-packager package
 	@mv deb-packager_*_amd64.deb dist/
-	@rm -f dist/deb-packager
+	@rm -f dist/deb-packager dist/deb-packager.1.gz
