@@ -1,3 +1,5 @@
 *.fasl
 deb-packager
 quicklisp-manifest.txt
+dist/*
+!dist/deb-packager.lisp

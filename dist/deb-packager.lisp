@@ -15,4 +15,7 @@ reproduce everything dpkg-buildpackage can do.")
   (:data-files
    (:path #p"usr/bin/deb-packager"
     :mode 755
-    :content (alexandria:read-file-into-byte-vector "dist/deb-packager"))))
+    :content (alexandria:read-file-into-byte-vector "dist/deb-packager"))
+   (:path #p"usr/share/man/man1/deb-packager.1.gz"
+    :mode 644
+    :content (alexandria:read-file-into-byte-vector "dist/deb-packager.1.gz"))))

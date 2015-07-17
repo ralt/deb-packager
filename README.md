@@ -14,6 +14,28 @@ path to install them)
 - Auto-generated changelog and package properties based on the
 definition
 
+Notably missing (yet) features:
+
+- Creating source packages
+- Creating .dsc and .changes files
+- Compiling and overriding compilation options
+
+### Why deb-packager instead of dpkg-buildpackage?
+
+dpkg-buildpackage, while a full-featured solution, requires a very
+specific structure of files and folders. While understandable, there
+is a lot of unnecessary requirements, such as a compat file that holds
+a magic number, the list of directories where the files will be
+installed, and generally speaking, a lot more verbose than needed.
+
+deb-packager aims to make it painless to create a debian package,
+while reproducing everything dpkg-buildpackage supports.
+
+Finally, dpkg-buildpackage is relatively slow because of its way of
+going through the filesystem to build the package. deb-packager builds
+the debian package in memory before writing it to the disk, making it
+much faster. (But maybe inconvenient if the package is too big.)
+
 ### Roadmap
 
 - Write documentation
