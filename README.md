@@ -19,6 +19,7 @@ Notably missing (yet) features:
 - Creating source packages
 - Creating .dsc and .changes files
 - Compiling and overriding compilation options
+- GPG support
 
 ### Why deb-packager instead of dpkg-buildpackage?
 
@@ -38,7 +39,6 @@ much faster. (But maybe inconvenient if the package is too big.)
 
 ### Roadmap
 
-- Write documentation
 - Support gpg signatures
 - Support break/conflicts
 - Support source package creation (+ .dsc & .changes), patching, and
