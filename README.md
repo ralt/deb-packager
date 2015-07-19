@@ -39,8 +39,6 @@ much faster. (But maybe inconvenient if the package is too big.)
 
 ### Roadmap
 
-- Support gpg signatures
-- Support break/conflicts
 - Support source package creation (+ .dsc & .changes), patching, and
   building from this source package to binary package. Using pbuilder
   to handle the creation of the package means being reliant on
@@ -53,6 +51,8 @@ much faster. (But maybe inconvenient if the package is too big.)
   vagrant and lxc as a backend. Hm...
 - Support building python packages. In addition, see if it's possible
   to build nodejs packages, php packages, etc.
+- Support gpg signatures
+- Support break/conflicts
 
 ### License
 
