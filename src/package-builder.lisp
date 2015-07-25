@@ -2,7 +2,12 @@
 
 (defun run (command)
   (let ((s (make-string-output-stream)))
-    (uiop:run-program command)
+    (multiple-value-bind (_ __ status)
+        (uiop:run-program command)
+      (declare (ignore _ __))
+      (unless (= status 0)
+        (format t "The following error occured: ~%~A~%" (get-output-stream-string s))
+        (uiop:quit status)))
     (get-output-stream-string s)))
 
 (defun cat (&rest args)
