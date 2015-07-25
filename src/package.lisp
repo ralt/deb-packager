@@ -3,7 +3,8 @@
   (:shadowing-import-from #:immutable-struct :ftype)
   (:export :define-deb-package
            :main
-           :disable-debugger))
+           :disable-debugger
+           :define-deb-package-from-source))
 
 (in-package #:deb-packager)
 
