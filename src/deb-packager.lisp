@@ -57,14 +57,6 @@
      (initialize-data-files package data-files)
      (write-deb-file (package-pathname package) package)))
 
-(defun run (command)
-  (let ((s (make-string-output-stream)))
-    (uiop:run-program command)
-    (get-output-stream-string s)))
-
-(defun cat (&rest args)
-  (apply #'concatenate 'string args))
-
 (defmacro define-deb-package-from-source (name source-folder &body forms)
   `(build-source ',name
                  ,source-folder

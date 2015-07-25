@@ -1,5 +1,13 @@
 (in-package #:deb-packager)
 
+(defun run (command)
+  (let ((s (make-string-output-stream)))
+    (uiop:run-program command)
+    (get-output-stream-string s)))
+
+(defun cat (&rest args)
+  (apply #'concatenate 'string args))
+
 (defun build-source (name source-folder arch depends)
   (let ((chroot-folder (cat "/tmp/"
                             (string-downcase (symbol-name name))
