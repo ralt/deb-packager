@@ -66,10 +66,10 @@
   (apply #'concatenate 'string args))
 
 (defmacro define-deb-package-from-source (name source-folder &body forms)
-  `(build-package ',name
-                  ,source-folder
-                  ,@(get-item forms :architecture)
-                  ,@(get-item forms :build-depends)))
+  `(build-source ',name
+                 ,source-folder
+                 ,@(get-item forms :architecture)
+                 ,@(get-item forms :build-depends)))
 
 (ftype write-deb-file pathname deb-package null)
 (defun write-deb-file (path package)

@@ -1,6 +1,6 @@
 (in-package #:deb-packager)
 
-(defun build-package (name source-folder arch depends)
+(defun build-source (name source-folder arch depends)
   (let ((chroot-folder (cat "/tmp/"
                             (string-downcase (symbol-name name))
                             "-"
