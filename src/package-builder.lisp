@@ -1,14 +1,11 @@
 (in-package #:deb-packager)
 
 (defun run (command)
-  (let ((s (make-string-output-stream)))
-    (multiple-value-bind (_ __ status)
-        (uiop:run-program command)
-      (declare (ignore _ __))
-      (unless (= status 0)
-        (format t "The following error occured: ~%~A~%" (get-output-stream-string s))
-        (uiop:quit status)))
-    (get-output-stream-string s)))
+  (multiple-value-bind (output error-output status)
+      (uiop:run-program command :output t :error-output t :ignore-error-status t)
+    (unless (= status 0)
+      (format t "An error occured~%"))
+    (values output error-output)))
 
 (defun cat (&rest args)
   (apply #'concatenate 'string args))
@@ -24,4 +21,8 @@
     (run (cat "chroot " chroot-folder " apt-get update"))
     (run (cat "cp -Rp " (namestring source-folder) " " chroot-folder "/tmp/"))
     (run (cat "chroot " chroot-folder
-              " apt-get install " (format nil "~{~A ~}" depends)))))
+              " apt-get install -y " (format nil "~{~A ~}" depends)))
+    (run (cat "chroot " chroot-folder
+              " mkdir -p /tmp/installed"))
+    (run (cat "chroot " chroot-folder
+              " ./configure && make && make DESTDIR=/tmp/installed install"))))
