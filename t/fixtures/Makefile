@@ -4,5 +4,5 @@ all:
 	touch foobar
 
 install:
-	mkdir -p $(DESTDIT)/usr/bin
+	mkdir -p $(DESTDIR)/usr/bin
 	install -m 755 foobar $(DESTDIR)/usr/bin/foobar
