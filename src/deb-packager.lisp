@@ -61,7 +61,9 @@
   `(build-source ',name
                  ,source-folder
                  ,@(get-item forms :architecture)
-                 ',@(get-item forms :build-depends)))
+                 ',@(get-item forms :build-depends)
+                 ,@(or (get-item (get-item forms :source) :repository)
+                       '("http://http.debian.net/debian"))))
 
 (ftype write-deb-file pathname deb-package null)
 (defun write-deb-file (path package)
