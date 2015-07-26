@@ -7,6 +7,9 @@
       (format t "An error occured~%"))
     (values output error-output)))
 
+(defun run-in-chroot (folder command)
+  (run (cat "chroot " folder " bash -c '" command "'")))
+
 (defun cat (&rest args)
   (apply #'concatenate 'string args))
 
@@ -14,15 +17,13 @@
   (let ((chroot-folder (cat "/tmp/"
                             (string-downcase (symbol-name name))
                             "-"
-                            (write-to-string (get-universal-time)))))
+                            (write-to-string (get-universal-time))))
+        (project-folder (first (last (pathname-directory (pathname source-folder))))))
     (run (cat "mkdir -p " chroot-folder))
     (run (cat "cdebootstrap --arch " arch " jessie " chroot-folder
               " http://http.debian.net/debian"))
-    (run (cat "chroot " chroot-folder " apt-get update"))
+    (run-in-chroot chroot-folder "apt-get update")
     (run (cat "cp -Rp " (namestring source-folder) " " chroot-folder "/tmp/"))
-    (run (cat "chroot " chroot-folder
-              " apt-get install -y " (format nil "~{~A ~}" depends)))
-    (run (cat "chroot " chroot-folder
-              " mkdir -p /tmp/installed"))
-    (run (cat "chroot " chroot-folder
-              " ./configure && make && make DESTDIR=/tmp/installed install"))))
+    (run-in-chroot chroot-folder (cat "apt-get install -y " (format nil "~{~A ~}" depends)))
+    (run-in-chroot chroot-folder "mkdir -p /tmp/installed")
+    (run-in-chroot chroot-folder (cat "cd /tmp/" project-folder "; ./configure && make && make DESTDIR=/tmp/installed install"))))
