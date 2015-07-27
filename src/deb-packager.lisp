@@ -80,7 +80,7 @@
                               nil
                               "/~{~A~^/~}"
                               (nthcdr 3 (cl-ppcre:split "/" (namestring file)))))
-                     :content ,(alexandria:read-file-into-byte-vector file)
+                     :content (alexandria:read-file-into-byte-vector ,file)
                      :mode ,(parse-integer (subseq (format nil "~o" mode) 2)))
                    data-files))))
       `(define-deb-package ,name
