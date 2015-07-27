@@ -13,12 +13,8 @@
 (defun cat (&rest args)
   (apply #'concatenate 'string args))
 
-(defun build-source (name source-folder arch depends repository)
-  (let ((chroot-folder (cat "/tmp/"
-                            (string-downcase (symbol-name name))
-                            "-"
-                            (write-to-string (get-universal-time))))
-        (project-folder (first (last (pathname-directory (pathname source-folder))))))
+(defun build-source (source-folder chroot-folder arch depends repository)
+  (let ((project-folder (first (last (pathname-directory (pathname source-folder))))))
     (run (cat "mkdir -p " chroot-folder))
     (run (cat "cdebootstrap --arch " arch
               " stable "

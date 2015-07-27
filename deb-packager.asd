@@ -16,7 +16,8 @@
                :ironclad
                :djula
                :cl-ppcre
-               :unix-opts)
+               :unix-opts
+               :cl-fad)
   :components ((:module
                 "src"
                 :components

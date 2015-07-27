@@ -58,12 +58,35 @@
      (write-deb-file (package-pathname package) package)))
 
 (defmacro define-deb-package-from-source (name source-folder &body forms)
-  `(build-source ',name
-                 ,source-folder
-                 ,@(get-item forms :architecture)
-                 ',@(get-item forms :build-depends)
-                 ,@(or (get-item (get-item forms :source) :repository)
-                       '("http://http.debian.net/debian"))))
+  (let ((chroot-folder (cat "/tmp/"
+                            (string-downcase (symbol-name name))
+                            "-"
+                            (write-to-string (get-universal-time)))))
+    (build-source source-folder
+                  chroot-folder
+                  (first (get-item forms :architecture))
+                  (first (get-item forms :build-depends))
+                  (or (first (get-item (get-item forms :source) :repository))
+                      "http://http.debian.net/debian"))
+    (let ((installed-files (cat chroot-folder "/tmp/installed/"))
+          (data-files nil))
+      (cl-fad:walk-directory
+       installed-files
+       #'(lambda (file)
+           (let* ((stat (sb-posix:stat file))
+                  (mode (sb-posix:stat-mode stat)))
+             (push `(:path ,(pathname
+                             (format
+                              nil
+                              "/~{~A~^/~}"
+                              (nthcdr 3 (cl-ppcre:split "/" (namestring file)))))
+                     :content ,(alexandria:read-file-into-byte-vector file)
+                     :mode ,(parse-integer (subseq (format nil "~o" mode) 2)))
+                   data-files))))
+      `(define-deb-package ,name
+         ,@forms
+         (:data-files
+          ,@data-files)))))
 
 (ftype write-deb-file pathname deb-package null)
 (defun write-deb-file (path package)
