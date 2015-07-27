@@ -78,7 +78,7 @@
              (push `(:path ,(pathname
                              (format
                               nil
-                              "/~{~A~^/~}"
+                              "~{~A~^/~}"
                               (nthcdr 3 (cl-ppcre:split "/" (namestring file)))))
                      :content (alexandria:read-file-into-byte-vector ,file)
                      :mode ,(parse-integer (subseq (format nil "~o" mode) 2)))
