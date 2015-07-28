@@ -8,7 +8,7 @@
     (values output error-output)))
 
 (defun run-in-chroot (folder command)
-  (run (cat "chroot " folder " bash -c '" command "'")))
+  (run (cat "fakeroot fakecroot chroot " folder " bash -c '" command "'")))
 
 (defun cat (&rest args)
   (apply #'concatenate 'string args))
@@ -16,7 +16,7 @@
 (defun build-source (source-folder chroot-folder arch depends repository)
   (let ((project-folder (first (last (pathname-directory (pathname source-folder))))))
     (run (cat "mkdir -p " chroot-folder))
-    (run (cat "cdebootstrap --arch " arch
+    (run (cat "fakeroot cdebootstrap --arch " arch
               " stable "
               chroot-folder
               " " repository
