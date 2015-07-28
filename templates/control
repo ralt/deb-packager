@@ -2,8 +2,9 @@ Package: {{ name }}
 Version: {{ version }}
 Architecture: {{ architecture }}
 Maintainer: {{ maintainer|safe }}{% if depends %}
-Depends: {{ depends|safe }}{% endif %}
+Depends: {{ depends|safe }}{% endif %}{% if build-depends %}
+Build-Depends: {{ build-depends|safe }}{% endif %}
 Section: misc
 Priority: optional
-Description: {{ description }}{% if long-description %}
-{{ long-description }}{% endif %}
+Description: {{ description|safe }}{% if long-description %}
+{{ long-description|safe }}{% endif %}

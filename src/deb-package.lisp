@@ -51,7 +51,10 @@
                :initform (error "Maintainer required."))
    (depends :initarg :depends
             :type list
-            :reader depends))
+            :reader depends)
+   (build-depends :initarg :build-depends
+            :type list
+            :reader build-depends))
   (:documentation "Holds all the data required to generate a debian package."))
 
 (ftype name deb-package string)

@@ -24,6 +24,9 @@
                                 :depends ',@(if (get-item forms :depends)
                                                 (get-item forms :depends)
                                                 '(nil))
+                                :build-depends ',@(if (get-item forms :build-depends)
+                                                (get-item forms :build-depends)
+                                                '(nil))
                                 :long-description
                                 ,@(if (get-item forms :long-description)
                                       (get-item forms :long-description)
