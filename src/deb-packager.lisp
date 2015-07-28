@@ -84,7 +84,9 @@
                      :mode ,(parse-integer (subseq (format nil "~o" mode) 2)))
                    data-files))))
       `(define-deb-package ,name
-         ,@forms
+         ,@(remove-if #'(lambda (item)
+                          (eq (first item) :source))
+                      forms)
          (:data-files
           ,@data-files)))))
 
