@@ -19,7 +19,8 @@
     (run (cat "fakeroot cdebootstrap --arch " arch
               " stable "
               chroot-folder
-              " " repository
+              " --flavour=build "
+              repository
               " --include=" (format nil "~{~A~^,~}" depends)))
     (run (cat "cp -Rp " (namestring source-folder) " " chroot-folder "/tmp/"))
     (run-in-chroot chroot-folder "mkdir -p /tmp/installed")
