@@ -8,7 +8,7 @@
     (values output error-output)))
 
 (defun run-in-chroot (folder command)
-  (run (cat "fakeroot fakecroot chroot " folder " bash -c '" command "'")))
+  (run (cat "fakeroot fakechroot chroot " folder " bash -c '" command "'")))
 
 (defun cat (&rest args)
   (apply #'concatenate 'string args))
