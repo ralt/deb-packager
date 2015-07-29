@@ -7,7 +7,8 @@
   (:source
    (:folder #p"t/fixtures/")
    (:type :autotools)
-   (:patches (#p"t/fixtures/patch")))
+   (:patches (#p"t/fixtures/patch"))
+   (:configure-options ("--with-foo")))
   (:description "foobar bar qux")
   (:long-description "foo bar
 bar

@@ -26,12 +26,13 @@
                      (first (get-item forms :architecture))
                      (first (get-item forms :build-depends))
                      (or (first (get-item (get-item forms :source) :repository))
-                         "http://http.debian.net/debian"))
+                         "http://http.debian.net/debian")
+                     (first (get-item (get-item forms :source) :configure-options)))
     (let ((files (get-installed-files (cat chroot-folder "/tmp/installed/"))))
       (cleanup-files chroot-folder)
       files)))
 
-(defun build-autotools (source-folder chroot-folder arch depends repository)
+(defun build-autotools (source-folder chroot-folder arch depends repository configure-options)
   (let ((project-folder (first (last (pathname-directory (pathname source-folder))))))
     (run (cat "mkdir -p " chroot-folder))
     (run (cat "sudo cdebootstrap --arch " arch
@@ -42,7 +43,11 @@
               " --include=" (format nil "~{~A~^,~}" depends)))
     (run (cat "cp -Rp " (namestring source-folder) " " chroot-folder "/tmp/"))
     (run-in-chroot chroot-folder "mkdir -p /tmp/installed")
-    (run-in-chroot chroot-folder (cat "cd /tmp/" project-folder "; ./configure && make && make DESTDIR=/tmp/installed install"))))
+    (run-in-chroot chroot-folder
+                   (cat "cd /tmp/" project-folder ";"
+                        (format nil " ./configure ~{~A ~} " configure-options)
+                        "&& make "
+                        "&& make DESTDIR=/tmp/installed install"))))
 
 (defun get-installed-files (installed-files)
   (let ((data-files nil))
