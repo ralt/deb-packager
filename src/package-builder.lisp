@@ -25,3 +25,23 @@
     (run (cat "cp -Rp " (namestring source-folder) " " chroot-folder "/tmp/"))
     (run-in-chroot chroot-folder "mkdir -p /tmp/installed")
     (run-in-chroot chroot-folder (cat "cd /tmp/" project-folder "; ./configure && make && make DESTDIR=/tmp/installed install"))))
+
+(defun get-installed-files (installed-files)
+  (let ((data-files nil))
+    (cl-fad:walk-directory
+     installed-files
+     #'(lambda (file)
+         (let* ((stat (sb-posix:stat file))
+                (mode (sb-posix:stat-mode stat)))
+           (push `(:path ,(pathname
+                           (format
+                            nil
+                                  "~{~A~^/~}"
+                                  (nthcdr 3 (cl-ppcre:split "/" (namestring file)))))
+                         :content ,(alexandria:read-file-into-byte-vector file)
+                         :mode ,(parse-integer (subseq (format nil "~o" mode) 2)))
+                 data-files))))
+    data-files))
+
+(defun cleanup-files (folder)
+  (run (cat "sudo rm -rf " folder)))

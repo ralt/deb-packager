@@ -71,21 +71,9 @@
                   (first (get-item forms :build-depends))
                   (or (first (get-item (get-item forms :source) :repository))
                       "http://http.debian.net/debian"))
-    (let ((installed-files (cat chroot-folder "/tmp/installed/"))
-          (data-files nil))
-      (cl-fad:walk-directory
-       installed-files
-       #'(lambda (file)
-           (let* ((stat (sb-posix:stat file))
-                  (mode (sb-posix:stat-mode stat)))
-             (push `(:path ,(pathname
-                             (format
-                              nil
-                              "~{~A~^/~}"
-                              (nthcdr 3 (cl-ppcre:split "/" (namestring file)))))
-                     :content (alexandria:read-file-into-byte-vector ,file)
-                     :mode ,(parse-integer (subseq (format nil "~o" mode) 2)))
-                   data-files))))
+    (let* ((installed-files (cat chroot-folder "/tmp/installed/"))
+           (data-files (get-installed-files installed-files)))
+      (cleanup-files chroot-folder)
       `(define-deb-package ,name
          ,@(remove-if #'(lambda (item)
                           (eq (first item) :source))
