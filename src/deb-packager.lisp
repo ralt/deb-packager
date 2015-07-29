@@ -60,12 +60,12 @@
      (initialize-data-files package data-files)
      (write-deb-file (package-pathname package) package)))
 
-(defmacro define-deb-package-from-source (name source-folder &body forms)
+(defmacro define-deb-package-from-source (name &body forms)
   (let ((chroot-folder (cat "/tmp/"
                             (string-downcase (symbol-name name))
                             "-"
                             (write-to-string (get-universal-time)))))
-    (build-source source-folder
+    (build-source (first (get-item (get-item forms :source) :folder))
                   chroot-folder
                   (first (get-item forms :architecture))
                   (first (get-item forms :build-depends))

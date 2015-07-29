@@ -1,10 +1,11 @@
 (in-package #:deb-packager-test)
 
-(deb-packager:define-deb-package-from-source bar #p"t/fixtures/"
+(deb-packager:define-deb-package-from-source bar
   (:architecture "amd64")
   (:depends ("vim (> 7)")) ; optional
   (:build-depends ("make" "coreutils"))
   (:source
+   (:folder #p"t/fixtures/")
    (:type :autotools)
    (:patches (#p"t/fixtures/patch")))
   (:description "foobar bar qux")
