@@ -13,7 +13,24 @@
 (defun cat (&rest args)
   (apply #'concatenate 'string args))
 
-(defun build-source (source-folder chroot-folder arch depends repository)
+(defgeneric build-source (type name forms)
+  (:documentation "Builds the files from a defined source."))
+
+(defmethod build-source ((type (eql :autotools)) name forms)
+  (let ((chroot-folder (cat "/tmp/"
+                            (string-downcase (symbol-name name))
+                            "-"
+                            (write-to-string (get-universal-time)))))
+    (build-autotools (first (get-item (get-item forms :source) :folder))
+                     chroot-folder
+                     (first (get-item forms :architecture))
+                     (first (get-item forms :build-depends))
+                     (or (first (get-item (get-item forms :source) :repository))
+                         "http://http.debian.net/debian"))
+    (cleanup-files chroot-folder)
+    (get-installed-files (cat chroot-folder "/tmp/installed/"))))
+
+(defun build-autotools (source-folder chroot-folder arch depends repository)
   (let ((project-folder (first (last (pathname-directory (pathname source-folder))))))
     (run (cat "mkdir -p " chroot-folder))
     (run (cat "sudo cdebootstrap --arch " arch
