@@ -17,17 +17,18 @@
   (:documentation "Builds the files from a defined source."))
 
 (defmethod build-source ((type (eql :autotools)) name forms)
-  (let ((chroot-folder (cat "/tmp/"
+  (let ((source-form (get-item forms :source))
+        (chroot-folder (cat "/tmp/"
                             (string-downcase (symbol-name name))
                             "-"
                             (write-to-string (get-universal-time)))))
-    (build-autotools (first (get-item (get-item forms :source) :folder))
+    (build-autotools (first (get-item source-form :folder))
                      chroot-folder
                      (first (get-item forms :architecture))
                      (first (get-item forms :build-depends))
-                     (or (first (get-item (get-item forms :source) :repository))
+                     (or (first (get-item form-source :repository))
                          "http://http.debian.net/debian")
-                     (first (get-item (get-item forms :source) :configure-options)))
+                     (first (get-item form-source :configure-options)))
     (let ((files (get-installed-files (cat chroot-folder "/tmp/installed/"))))
       (cleanup-files chroot-folder)
       files)))
