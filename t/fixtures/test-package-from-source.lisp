@@ -1,4 +1,4 @@
-(deb-packager:define-deb-package-from-source bar #p"t/fixtures/"
+(define-deb-package-from-source bar #p"t/fixtures/"
   (:architecture "amd64")
   (:depends ("vim (> 7)")) ; optional
   (:build-depends ("make" "coreutils"))
