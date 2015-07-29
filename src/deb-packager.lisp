@@ -134,7 +134,7 @@
    :usage-of "deb-packager"
    :args "FILE"))
 
-(defun main (args)
+(defun main ()
   (declare (ignore args))
   (multiple-value-bind (options free-args)
       (handler-case

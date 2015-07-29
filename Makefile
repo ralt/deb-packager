@@ -1,21 +1,9 @@
-ROOT_DIR:=$(shell dirname $(realpath $(lastword $(MAKEFILE_LIST))))
 SOURCES := $(wildcard src/*.lisp) $(wildcard *.asd) $(wildcard t/*.lisp)
 
 .PHONY: dist manual
 
-deb-packager: quicklisp-manifest.txt $(SOURCES)
-	@buildapp  --manifest-file quicklisp-manifest.txt \
-		--load-system deb-packager \
-		--eval '(deb-packager:disable-debugger)' \
-		--compress-core \
-		--output deb-packager \
-		--entry deb-packager:main
-
-quicklisp-manifest.txt:
-	@sbcl --no-userinit --no-sysinit --non-interactive \
-		--load ~/quicklisp/setup.lisp \
-		--eval '(ql:quickload :deb-packager)' \
-		--eval '(ql:write-asdf-manifest-file "quicklisp-manifest.txt")'
+deb-packager: $(SOURCES)
+	@sbcl --load dump-image.lisp --quit
 
 manual:
 	@mkdir -p dist/
