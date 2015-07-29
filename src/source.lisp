@@ -27,8 +27,9 @@
                      (first (get-item forms :build-depends))
                      (or (first (get-item (get-item forms :source) :repository))
                          "http://http.debian.net/debian"))
-    (cleanup-files chroot-folder)
-    (get-installed-files (cat chroot-folder "/tmp/installed/"))))
+    (let ((files (get-installed-files (cat chroot-folder "/tmp/installed/"))))
+      (cleanup-files chroot-folder)
+      files)))
 
 (defun build-autotools (source-folder chroot-folder arch depends repository)
   (let ((project-folder (first (last (pathname-directory (pathname source-folder))))))
