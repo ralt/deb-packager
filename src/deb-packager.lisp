@@ -62,7 +62,7 @@
 
 (defmacro define-deb-package-from-source (name &body forms)
   (let ((data-files (build-source (first (get-item (get-item forms :source) :type))
-                                  'name
+                                  name
                                   forms)))
     `(define-deb-package ,name
        ,@(remove-if #'(lambda (item)

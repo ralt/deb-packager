@@ -26,14 +26,21 @@
                      chroot-folder
                      (first (get-item forms :architecture))
                      (first (get-item forms :build-depends))
-                     (or (first (get-item form-source :repository))
+                     (or (first (get-item source-form :repository))
                          "http://http.debian.net/debian")
-                     (first (get-item form-source :configure-options)))
+                     (first (get-item source-form :configure-options))
+                     (first (get-item source-form :patches)))
     (let ((files (get-installed-files (cat chroot-folder "/tmp/installed/"))))
-      (cleanup-files chroot-folder)
+      ;;(cleanup-files chroot-folder)
       files)))
 
-(defun build-autotools (source-folder chroot-folder arch depends repository configure-options)
+(defun build-autotools (source-folder
+                        chroot-folder
+                        arch
+                        depends
+                        repository
+                        configure-options
+                        patches)
   (let ((project-folder (first (last (pathname-directory (pathname source-folder))))))
     (run (cat "mkdir -p " chroot-folder))
     (run (cat "sudo cdebootstrap --arch " arch
@@ -43,6 +50,9 @@
               repository
               " --include=" (format nil "~{~A~^,~}" depends)))
     (run (cat "cp -Rp " (namestring source-folder) " " chroot-folder "/tmp/"))
+    (dolist (patch patches)
+      (run (cat "patch --force --directory=" chroot-folder "/tmp/" project-folder
+                " -p1 < " (namestring patch))))
     (run-in-chroot chroot-folder "mkdir -p /tmp/installed")
     (run-in-chroot chroot-folder
                    (cat "cd /tmp/" project-folder ";"
