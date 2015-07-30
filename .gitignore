@@ -2,3 +2,4 @@
 deb-packager
 quicklisp-manifest.txt
 dist/
+*.deb
