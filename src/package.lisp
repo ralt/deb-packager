@@ -4,6 +4,12 @@
   (:export :define-deb-package
            :main
            :disable-debugger
+           :deb-package
+           :deb-file
+           :changelog-entry
+           :initialize-control-files
+           :initialize-data-files
+           :write-deb-file
            :define-deb-package-from-source))
 
 (in-package #:deb-packager)
