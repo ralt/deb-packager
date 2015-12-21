@@ -20,7 +20,7 @@
                           :version (package-version package)
                           :architecture (architecture package)
                           :maintainer (maintainer package)
-                          :depends (format nil "~{~A~^ ~}" (depends package))
+                          :depends (format nil "~{~A~^, ~}" (depends package))
                           :build-depends (format nil "~{~A~^ ~}" (build-depends package))
                           :description (description package)
                           :long-description (package-long-description package)))))
